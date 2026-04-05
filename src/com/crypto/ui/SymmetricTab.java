@@ -4,13 +4,13 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class SymetricTab extends JPanel {
-    JComboBox<String> cbAlgorithm, cbMode, cbPadding, cbKeyLength;
+public class SymmetricTab extends JPanel {
+    JComboBox<String> cbAlgorithm, cbMode, cbPadding, cbKeySize;
     JTextField tfKey, tfIV;
     JTextArea txtInput, txtOutput;
-    JButton encryptBtn, decryptBtn, genKeyBtn, importKeyBtn, exportKeyBtn;
+    JButton encryptBtn, decryptBtn, genKeyBtn, importKeyBtn, exportKeyBtn, importFileBtn, exportFileBtn;
 
-    public SymetricTab() {
+    public SymmetricTab() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -21,7 +21,7 @@ public class SymetricTab extends JPanel {
         cbAlgorithm = new JComboBox<>(new String[]{"AES", "DES", "TripleDES"});
         cbMode = new JComboBox<>(new String[]{"ECB", "CBC", "CFB", "OFB", "CTR"});
         cbPadding = new JComboBox<>(new String[]{"PKCS5Padding", "NoPadding"});
-        cbKeyLength = new JComboBox<>(new String[]{"128 bits", "192 bits", "256 bits"});
+        cbKeySize = new JComboBox<>(new String[]{"128 bits", "192 bits", "256 bits"});
         tfKey = new JTextField(15);
         tfIV = new JTextField(15);
         genKeyBtn = new JButton("Tạo khóa");
@@ -36,7 +36,7 @@ public class SymetricTab extends JPanel {
         row1.add(new JLabel("Padding:"));
         row1.add(cbPadding);
         row1.add(new JLabel("Độ dài khóa:"));
-        row1.add(cbKeyLength);
+        row1.add(cbKeySize);
 
         JPanel row2 = new JPanel();
         row2.add(new JLabel("Khóa (Key):"));
@@ -52,6 +52,7 @@ public class SymetricTab extends JPanel {
 
         // === Panel Xử lý dữ liệu ===
         JPanel bottomPanel = new JPanel(new GridBagLayout());
+        bottomPanel.setBorder(new TitledBorder("Xử lý dữ liệu"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1.0;
@@ -64,6 +65,9 @@ public class SymetricTab extends JPanel {
         txtInput.setLineWrap(true);
         txtInput.setWrapStyleWord(true);
         inputPanel.add(new JScrollPane(txtInput), BorderLayout.CENTER);
+
+        importFileBtn = new JButton("Chọn File");
+        inputPanel.add(importFileBtn, BorderLayout.SOUTH);
 
         gbc.gridx = 0;
         gbc.weightx = 0.45;
@@ -93,6 +97,9 @@ public class SymetricTab extends JPanel {
         txtOutput.setLineWrap(true);
         txtOutput.setWrapStyleWord(true);
         outputPanel.add(new JScrollPane(txtOutput), BorderLayout.CENTER);
+
+        exportFileBtn = new JButton("Lưu File");
+        outputPanel.add(exportFileBtn, BorderLayout.SOUTH);
 
         gbc.gridx = 2;
         gbc.weightx = 0.45;

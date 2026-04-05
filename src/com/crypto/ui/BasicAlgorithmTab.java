@@ -31,6 +31,7 @@ public class BasicAlgorithmTab extends JPanel {
 
         // === Panel Mã hóa/ Giải mã ===
         JPanel bottomPanel = new JPanel(new GridBagLayout());
+        bottomPanel.setBorder(new TitledBorder("Xử lý dữ liệu"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1.0;

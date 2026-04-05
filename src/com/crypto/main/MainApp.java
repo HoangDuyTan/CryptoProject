@@ -1,7 +1,8 @@
 package com.crypto.main;
 
+import com.crypto.ui.AsymmetricTab;
 import com.crypto.ui.BasicAlgorithmTab;
-import com.crypto.ui.SymetricTab;
+import com.crypto.ui.SymmetricTab;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,8 +22,8 @@ public class MainApp extends JFrame {
         tabbedPane.setFont(new Font("Arial", Font.BOLD, 20));
 
         tabbedPane.addTab("Giải thuật cơ bản", new BasicAlgorithmTab());
-        tabbedPane.addTab("Mã hóa đối xứng", new SymetricTab());
-        tabbedPane.addTab("Mã hoá bất đối xứng", null);
+        tabbedPane.addTab("Mã hóa đối xứng", new SymmetricTab());
+        tabbedPane.addTab("Mã hoá bất đối xứng", new AsymmetricTab());
         tabbedPane.addTab("Hash", null);
         tabbedPane.addTab("Chữ ký điện tử", null);
 
