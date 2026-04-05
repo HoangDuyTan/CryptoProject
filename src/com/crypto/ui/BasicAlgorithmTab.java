@@ -38,7 +38,7 @@ public class BasicAlgorithmTab extends JPanel {
 
         // Input
         JPanel inputPanel = new JPanel(new BorderLayout());
-        inputPanel.setBorder(new TitledBorder("Văn bản đầu vào"));
+        inputPanel.setBorder(new TitledBorder("Input"));
         txtInput = new JTextArea();
         txtInput.setLineWrap(true);
         txtInput.setWrapStyleWord(true);
@@ -67,7 +67,7 @@ public class BasicAlgorithmTab extends JPanel {
 
         // Output
         JPanel outputPanel = new JPanel(new BorderLayout());
-        outputPanel.setBorder(new TitledBorder("Văn bản đầu ra"));
+        outputPanel.setBorder(new TitledBorder("Output"));
         txtOutput = new JTextArea();
         txtOutput.setLineWrap(true);
         txtOutput.setWrapStyleWord(true);
