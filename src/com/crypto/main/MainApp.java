@@ -2,6 +2,7 @@ package com.crypto.main;
 
 import com.crypto.ui.AsymmetricTab;
 import com.crypto.ui.BasicAlgorithmTab;
+import com.crypto.ui.HashTab;
 import com.crypto.ui.SymmetricTab;
 
 import javax.swing.*;
@@ -24,7 +25,7 @@ public class MainApp extends JFrame {
         tabbedPane.addTab("Giải thuật cơ bản", new BasicAlgorithmTab());
         tabbedPane.addTab("Mã hóa đối xứng", new SymmetricTab());
         tabbedPane.addTab("Mã hoá bất đối xứng", new AsymmetricTab());
-        tabbedPane.addTab("Hash", null);
+        tabbedPane.addTab("Hash", new HashTab());
         tabbedPane.addTab("Chữ ký điện tử", null);
 
         // Thanh Status

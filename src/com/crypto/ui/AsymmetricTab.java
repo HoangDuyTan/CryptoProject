@@ -86,7 +86,7 @@ public class AsymmetricTab extends JPanel {
 
         gbc.gridx = 1;
         gbc.weightx = 0.1;
-        bottomPanel.add(buttonPanel, gbc);
+        bottomPanel.add(buttonPanel,gbc);
 
         // Output
         JPanel outputPanel = new JPanel(new BorderLayout());
