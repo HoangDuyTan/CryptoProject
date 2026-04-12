@@ -1,7 +1,9 @@
 package com.crypto.controller;
 
+import com.crypto.model.classic.AffineCipher;
 import com.crypto.model.classic.CaesarCipher;
 import com.crypto.model.classic.SubstitutionCipher;
+import com.crypto.model.classic.VigenereCipher;
 import com.crypto.view.BasicAlgorithmView;
 
 import javax.swing.*;
@@ -51,10 +53,21 @@ public class ClassicController {
                     break;
 
                 case "Vigenere":
-
+                    try {
+                        result = isEncrypt ? VigenereCipher.encryptBase64(input, key, isVI) : VigenereCipher.decrypt(input, key, isVI);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(view, e.getMessage(), "Cảnh báo nhập liệu", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     break;
 
                 case "Affine":
+                    try {
+                        result = isEncrypt ? AffineCipher.encryptBase64(input, key, isVI) : AffineCipher.decrypt(input, key, isVI);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(view, e.getMessage(), "Cảnh báo nhập liệu", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     break;
 
                 case "Substitution":

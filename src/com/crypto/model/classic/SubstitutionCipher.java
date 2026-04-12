@@ -19,7 +19,7 @@ public class SubstitutionCipher {
         }
 
         if (fullKey.isEmpty()) {
-            throw new Exception("Khóa phải chứa ít nhất 1 chữ cái");
+            throw new Exception("Khóa Substitution phải chứa ít nhất 1 chữ cái");
         }
 
         for (char c : alphabet.toCharArray()) {
