@@ -1,16 +1,16 @@
-package com.crypto.ui;
+package com.crypto.view;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class BasicAlgorithmTab extends JPanel {
+public class BasicAlgorithmView extends JPanel {
     private JComboBox<String> cbAlgorithm, cbAlphabet;
     private JTextField tfKey;
     private JTextArea txtInput, txtOutput;
     private JButton encryptBtn, decryptBtn;
 
-    public BasicAlgorithmTab() {
+    public BasicAlgorithmView() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -18,7 +18,7 @@ public class BasicAlgorithmTab extends JPanel {
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
         topPanel.setBorder(new TitledBorder("Cấu hình Giải thuật"));
 
-        cbAlgorithm = new JComboBox<>(new String[]{"Caesar", "Vigenere", "Affine", "Substitution", "Hill", "Playfair"});
+        cbAlgorithm = new JComboBox<>(new String[]{"Caesar", "Vigenere", "Affine", "Substitution", "Hill", "Transposition"});
         cbAlphabet = new JComboBox<>(new String[]{"Tiếng Việt", "Tiếng Anh"});
         tfKey = new JTextField(15);
 
@@ -81,5 +81,61 @@ public class BasicAlgorithmTab extends JPanel {
         // === Thêm hết vào ===
         add(topPanel, BorderLayout.NORTH);
         add(bottomPanel, BorderLayout.CENTER);
+    }
+
+    public JButton getDecryptBtn() {
+        return decryptBtn;
+    }
+
+    public void setDecryptBtn(JButton decryptBtn) {
+        this.decryptBtn = decryptBtn;
+    }
+
+    public JButton getEncryptBtn() {
+        return encryptBtn;
+    }
+
+    public void setEncryptBtn(JButton encryptBtn) {
+        this.encryptBtn = encryptBtn;
+    }
+
+    public JTextArea getTxtOutput() {
+        return txtOutput;
+    }
+
+    public void setTxtOutput(JTextArea txtOutput) {
+        this.txtOutput = txtOutput;
+    }
+
+    public JTextArea getTxtInput() {
+        return txtInput;
+    }
+
+    public void setTxtInput(JTextArea txtInput) {
+        this.txtInput = txtInput;
+    }
+
+    public JTextField getTfKey() {
+        return tfKey;
+    }
+
+    public void setTfKey(JTextField tfKey) {
+        this.tfKey = tfKey;
+    }
+
+    public JComboBox<String> getCbAlphabet() {
+        return cbAlphabet;
+    }
+
+    public void setCbAlphabet(JComboBox<String> cbAlphabet) {
+        this.cbAlphabet = cbAlphabet;
+    }
+
+    public JComboBox<String> getCbAlgorithm() {
+        return cbAlgorithm;
+    }
+
+    public void setCbAlgorithm(JComboBox<String> cbAlgorithm) {
+        this.cbAlgorithm = cbAlgorithm;
     }
 }

@@ -1,6 +1,7 @@
 package com.crypto.main;
 
-import com.crypto.ui.*;
+import com.crypto.controller.ClassicController;
+import com.crypto.view.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,32 +20,18 @@ public class MainApp extends JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Arial", Font.BOLD, 20));
 
-        tabbedPane.addTab("Giải thuật cơ bản", new BasicAlgorithmTab());
-        tabbedPane.addTab("Mã hóa đối xứng", new SymmetricTab());
-        tabbedPane.addTab("Mã hoá bất đối xứng", new AsymmetricTab());
-        tabbedPane.addTab("Hash", new HashTab());
-        tabbedPane.addTab("Chữ ký điện tử", new SignatureTab());
+        BasicAlgorithmView basicAlgorithmView = new BasicAlgorithmView();
+        new ClassicController(basicAlgorithmView);
 
-        // Thanh Status
-        JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        statusPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.LIGHT_GRAY));
+        tabbedPane.addTab("Giải thuật cơ bản", basicAlgorithmView);
+        tabbedPane.addTab("Mã hóa đối xứng", new SymmetricView());
+        tabbedPane.addTab("Mã hoá bất đối xứng", new AsymmetricView());
+        tabbedPane.addTab("Hash", new HashView());
+        tabbedPane.addTab("Chữ ký điện tử", new SignatureView());
 
-        statusBar = new JLabel("Trạng thái: Sẵn sàng...");
-        statusBar.setFont(new Font("Arial", Font.ITALIC, 16));
-        statusBar.setBackground(Color.DARK_GRAY);
-        statusPanel.add(statusBar);
-
-        // Thêm hết vào
         add(tabbedPane, BorderLayout.CENTER);
-        add(statusPanel, BorderLayout.SOUTH);
 
         setVisible(true);
-    }
-
-    public static void updateStatus(String status) {
-        if (status != null) {
-            statusBar.setText("Trạng thái: " + status);
-        }
     }
 
     public static void main(String[] args) {

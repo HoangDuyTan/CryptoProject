@@ -1,15 +1,15 @@
-package com.crypto.ui;
+package com.crypto.view;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class HashTab extends JPanel {
+public class HashView extends JPanel {
     JComboBox<String> cbAlgorithm, cbOutputFormat;
     JTextArea txtInput, txtOutput;
     JButton hashBtn, importFileBtn;
 
-    public HashTab() {
+    public HashView() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

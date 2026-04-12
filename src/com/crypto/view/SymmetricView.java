@@ -1,16 +1,16 @@
-package com.crypto.ui;
+package com.crypto.view;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class SymmetricTab extends JPanel {
+public class SymmetricView extends JPanel {
     JComboBox<String> cbAlgorithm, cbMode, cbPadding, cbKeySize;
     JTextField tfKey, tfIV;
     JTextArea txtInput, txtOutput;
     JButton encryptBtn, decryptBtn, genKeyBtn, importKeyBtn, exportKeyBtn, importFileBtn, exportFileBtn;
 
-    public SymmetricTab() {
+    public SymmetricView() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

@@ -1,10 +1,10 @@
-package com.crypto.ui;
+package com.crypto.view;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class AsymmetricTab extends JPanel {
+public class AsymmetricView extends JPanel {
     JTextArea txtPublicKey, txtPrivateKey;
     JComboBox<String> cbKeySize;
     JButton GenRSAKeyBtn, LoadKeyBtn, SaveKeyBtn;
@@ -12,7 +12,7 @@ public class AsymmetricTab extends JPanel {
     JTextArea txtInput, txtOutput;
     JButton encryptBtn, decryptBtn, importFileBtn, exportFileBtn;
 
-    public AsymmetricTab() {
+    public AsymmetricView() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

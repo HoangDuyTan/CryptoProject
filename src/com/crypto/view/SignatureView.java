@@ -1,10 +1,10 @@
-package com.crypto.ui;
+package com.crypto.view;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class SignatureTab extends JPanel {
+public class SignatureView extends JPanel {
     // Top Panel
     JTextField txtPrivateKey, txtPublicKey;
     JButton GenKeyBtn, LoadPrivKeyBtn, LoadPubKeyBtn;
@@ -18,7 +18,7 @@ public class SignatureTab extends JPanel {
     JButton selectDocVerifyBtn, loadSigBtn, verifySigBtn;
     JTextArea txtDocVerify, txtSigInput;
 
-    public SignatureTab() {
+    public SignatureView() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
