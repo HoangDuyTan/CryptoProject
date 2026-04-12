@@ -1,6 +1,7 @@
 package com.crypto.controller;
 
 import com.crypto.model.classic.CaesarCipher;
+import com.crypto.model.classic.SubstitutionCipher;
 import com.crypto.view.BasicAlgorithmView;
 
 import javax.swing.*;
@@ -32,27 +33,45 @@ public class ClassicController {
         boolean isVI = alphabet.equals("Tiếng Việt");
 
         if (key.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Vui lòng nhập key", "Cảnh báo",  JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, "Vui lòng nhập key", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
         }
 
         try {
             String result = "";
-
             switch (algorithm) {
                 case "Caesar":
-                    int shift = Integer.parseInt(key);
-                    result = isEncrypt ? CaesarCipher.encryptBase64(input, shift, isVI) : CaesarCipher.decrypt(input, shift, isVI);
+                    try {
+                        int shift = Integer.parseInt(key);
+                        result = isEncrypt ? CaesarCipher.encryptBase64(input, shift, isVI) : CaesarCipher.decrypt(input, shift, isVI);
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(view, "Khóa của thuật toán Caesar phải là 1 số nguyên", "Cảnh báo nhập liệu", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     break;
+
                 case "Vigenere":
+
                     break;
+
                 case "Affine":
                     break;
+
                 case "Substitution":
+                    try {
+                        result = isEncrypt ? SubstitutionCipher.encryptBase64(input, key, isVI) : SubstitutionCipher.decrypt(input, key, isVI);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(view, e.getMessage(), "Cảnh báo nhập liệu", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     break;
+
                 case "Hill":
                     break;
+
                 case "Transposition":
                     break;
+
                 default:
                     JOptionPane.showMessageDialog(view, "Có lỗi xảy ra, vui lòng thử lại", "Thông báo", JOptionPane.ERROR_MESSAGE);
                     break;

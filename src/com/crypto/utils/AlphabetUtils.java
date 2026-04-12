@@ -5,7 +5,7 @@ public class AlphabetUtils {
     public static String EN_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     public static String VI_LOWER = "aàáảãạăằắẳẵặâầấẩẫậbcdđeèéẻẽẹêềếểễệghiìíỉĩịklmnoòóỏõọôồốổỗộơờớởỡợpqrstuùúủũụưừứửữựvxyỳýỷỹỵ";
-    public static String VI_UPPER = "AÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬBCDĐEÈÉẺẼẸÊỀẾỂẼỆGHIÌÍỈĨỊKLMNOÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢPQRSTUÙÚỦŨỤƯỪỨỬỮỰVXYỲÝỶỸỴ";
+    public static String VI_UPPER = "AÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬBCDĐEÈÉẺẼẸÊỀẾỂỄỆGHIÌÍỈĨỊKLMNOÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢPQRSTUÙÚỦŨỤƯỪỨỬỮỰVXYỲÝỶỸỴ";
 
     public static String getAlphabet(boolean isUpper, boolean isVI) {
         if (isVI) {
@@ -43,5 +43,26 @@ public class AlphabetUtils {
 
         boolean isUpper = isUpperCase(c, isVI);
         return getCharByIndex(index + shift, isUpper, isVI);
+    }
+
+    // Substitution
+    public static char substituteCharacter(char c, String key, boolean isVI, boolean isEncrypt) {
+        int index = getCharValue(c, isVI);
+
+        if (index == -1) {
+            return c;
+        }
+
+        boolean isUpper = isUpperCase(c, isVI);
+        String keyLower = key.toLowerCase();
+
+        if (isEncrypt) {
+            char mappedChar = keyLower.charAt(index);
+            return isUpper ? Character.toUpperCase(mappedChar) : mappedChar;
+        } else {
+            int originalIndex = keyLower.indexOf(Character.toLowerCase(c));
+            if (originalIndex == -1) return c;
+            return getCharByIndex(originalIndex, isUpper, isVI);
+        }
     }
 }

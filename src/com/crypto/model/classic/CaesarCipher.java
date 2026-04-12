@@ -23,7 +23,7 @@ public class CaesarCipher {
 
     public static String decrypt(String cipherText, int shift, boolean isVI) {
         byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
-        String result = new String(decodedBytes, StandardCharsets.UTF_8);
-        return encrypt(result, -shift, isVI);
+        String decodedText = new String(decodedBytes, StandardCharsets.UTF_8);
+        return encrypt(decodedText, -shift, isVI);
     }
 }
