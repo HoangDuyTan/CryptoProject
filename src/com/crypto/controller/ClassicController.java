@@ -1,9 +1,6 @@
 package com.crypto.controller;
 
-import com.crypto.model.classic.AffineCipher;
-import com.crypto.model.classic.CaesarCipher;
-import com.crypto.model.classic.SubstitutionCipher;
-import com.crypto.model.classic.VigenereCipher;
+import com.crypto.model.classic.*;
 import com.crypto.view.BasicAlgorithmView;
 
 import javax.swing.*;
@@ -80,6 +77,12 @@ public class ClassicController {
                     break;
 
                 case "Hill":
+                    try {
+                        result = isEncrypt ? HillCipher.encryptBase64(input, key, isVI) : HillCipher.decrypt(input, key, isVI);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(view, e.getMessage(), "Cảnh báo nhập dữ liệu", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     break;
 
                 case "Transposition":
@@ -92,7 +95,7 @@ public class ClassicController {
 
             view.getTxtOutput().setText(result);
         } catch (Exception e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(view, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
