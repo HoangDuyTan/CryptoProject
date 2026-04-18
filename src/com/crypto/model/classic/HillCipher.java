@@ -4,6 +4,7 @@ import com.crypto.utils.AlphabetUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Random;
 
 public class HillCipher {
     public static int modInverse(int a, int m) {
@@ -61,6 +62,31 @@ public class HillCipher {
         }
 
         return inverseK;
+    }
+
+    public static String genKey(boolean isVI) {
+        int m = isVI ? 89 : 26;
+        String alphabet = AlphabetUtils.getAlphabet(false, isVI);
+        Random random = new Random();
+
+        while(true){
+            char c1 = alphabet.charAt(random.nextInt(alphabet.length()));
+            char c2 = alphabet.charAt(random.nextInt(alphabet.length()));
+            char c3 = alphabet.charAt(random.nextInt(alphabet.length()));
+            char c4 = alphabet.charAt(random.nextInt(alphabet.length()));
+
+            int k00 = AlphabetUtils.getCharValue(c1, isVI);
+            int k01 = AlphabetUtils.getCharValue(c2, isVI);
+            int k10 = AlphabetUtils.getCharValue(c3, isVI);
+            int k11 = AlphabetUtils.getCharValue(c4, isVI);
+
+            int det = (k00 * k11 - k01 + k10) % m;
+            if (det < 0) det += m;
+
+            if (modInverse(det, m) != -1) {
+                return "" + c1 + c2 + c3 + c4;
+            }
+        }
     }
 
     public static String encrypt(String plainText, String key, boolean isVI) throws Exception {

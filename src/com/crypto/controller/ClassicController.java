@@ -16,12 +16,14 @@ public class ClassicController {
     private void initController() {
         view.getEncryptBtn().addActionListener(e -> process(true));
         view.getDecryptBtn().addActionListener(e -> process(false));
+        view.getGenKeyBtn().addActionListener(e -> handleGenKey());
     }
 
     private void process(boolean isEncrypt) {
         String algorithm = view.getCbAlgorithm().getSelectedItem().toString();
         String alphabet = view.getCbAlphabet().getSelectedItem().toString();
         String key = view.getTfKey().getText();
+
 
         String input = view.getTxtInput().getText();
         if (input.isEmpty()) {
@@ -102,6 +104,42 @@ public class ClassicController {
             view.getTxtOutput().setText(result);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void handleGenKey() {
+        String algorithm = view.getCbAlgorithm().getSelectedItem().toString();
+        String alphabet = view.getCbAlphabet().getSelectedItem().toString();
+        boolean isVI = alphabet.equals("Tiếng Việt");
+
+        String genKey = "";
+
+        try {
+            switch (algorithm) {
+                case "Caesar":
+                    genKey = CaesarCipher.genKey(isVI);
+                    break;
+                case "Vigenere":
+                    genKey = VigenereCipher.genKey(isVI);
+                    break;
+                case "Affine":
+                    genKey = AffineCipher.genKey(isVI);
+                    break;
+                case "Substitution":
+                    genKey = SubstitutionCipher.genKey(isVI);
+                    break;
+                case "Hill":
+                    genKey = HillCipher.genKey(isVI);
+                    break;
+                case "Transposition":
+                    genKey = TranspositionCipher.genKey(isVI);
+                    break;
+                default:
+                    return;
+            }
+            view.getTfKey().setText(genKey);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "Lỗi khi tạo khóa: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

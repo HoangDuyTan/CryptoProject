@@ -4,6 +4,7 @@ import com.crypto.utils.AlphabetUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Random;
 
 public class VigenereCipher {
     public static String formatKey(String key, boolean isVI) throws Exception {
@@ -19,6 +20,18 @@ public class VigenereCipher {
             throw new Exception("Khóa Vigenere phải chứa ít nhất 1 chữ cái");
         }
         return validKey.toString();
+    }
+
+    public static String genKey(boolean isVI) {
+        String alphabet = AlphabetUtils.getAlphabet(false, isVI);
+        Random random = new Random();
+        int length = random.nextInt(4) + 5;
+        StringBuilder key = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            key.append(alphabet.charAt(random.nextInt(alphabet.length())));
+        }
+        return key.toString();
     }
 
     public static String encrypt(String plainText, String key, boolean isVI) throws Exception {

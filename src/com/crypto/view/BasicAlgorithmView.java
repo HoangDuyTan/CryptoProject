@@ -8,7 +8,7 @@ public class BasicAlgorithmView extends JPanel {
     private JComboBox<String> cbAlgorithm, cbAlphabet;
     private JTextField tfKey;
     private JTextArea txtInput, txtOutput;
-    private JButton encryptBtn, decryptBtn;
+    private JButton encryptBtn, decryptBtn, genKeyBtn;
 
     public BasicAlgorithmView() {
         setLayout(new BorderLayout(10, 10));
@@ -21,6 +21,7 @@ public class BasicAlgorithmView extends JPanel {
         cbAlgorithm = new JComboBox<>(new String[]{"Caesar", "Vigenere", "Affine", "Substitution", "Hill", "Transposition"});
         cbAlphabet = new JComboBox<>(new String[]{"Tiếng Việt", "Tiếng Anh"});
         tfKey = new JTextField(15);
+        genKeyBtn = new JButton("Tạo khóa");
 
         topPanel.add(new JLabel("Giải thuật:"));
         topPanel.add(cbAlgorithm);
@@ -28,6 +29,7 @@ public class BasicAlgorithmView extends JPanel {
         topPanel.add(cbAlphabet);
         topPanel.add(new JLabel("Khóa (Key):"));
         topPanel.add(tfKey);
+        topPanel.add(genKeyBtn);
 
         // === Panel Mã hóa/ Giải mã ===
         JPanel bottomPanel = new JPanel(new GridBagLayout());
@@ -138,4 +140,8 @@ public class BasicAlgorithmView extends JPanel {
     public void setCbAlgorithm(JComboBox<String> cbAlgorithm) {
         this.cbAlgorithm = cbAlgorithm;
     }
+
+    public JButton getGenKeyBtn() { return genKeyBtn; }
+
+    public void setGenKeyBtn(JButton genKeyBtn) { this.genKeyBtn = genKeyBtn; }
 }

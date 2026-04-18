@@ -4,6 +4,7 @@ import com.crypto.utils.AlphabetUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 public class AffineCipher {
@@ -40,6 +41,19 @@ public class AffineCipher {
         } catch (NumberFormatException e) {
             throw new Exception("Khóa a và b phải là các số nguyên!");
         }
+    }
+
+    public static String genKey(boolean isVI) {
+        int m = isVI ? 89 : 26;
+        Random random = new Random();
+        int a, b;
+
+        do {
+            a = random.nextInt(m - 1) + 1;
+        } while (gcd(a, m) != 1);
+
+        b = random.nextInt(m);
+        return a + "," + b;
     }
 
     public static String encrypt(String plainText, String key, boolean isVI) throws Exception {

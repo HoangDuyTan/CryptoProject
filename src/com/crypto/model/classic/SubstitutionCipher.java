@@ -4,9 +4,10 @@ import com.crypto.utils.AlphabetUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Random;
 
 public class SubstitutionCipher {
-    public static String genKey(String key, boolean isVI) throws Exception {
+    public static String formatKey(String key, boolean isVI) throws Exception {
         String alphabet = AlphabetUtils.getAlphabet(false, isVI);
         StringBuilder fullKey = new StringBuilder();
 
@@ -31,8 +32,20 @@ public class SubstitutionCipher {
         return fullKey.toString();
     }
 
+    public static String genKey(boolean isVI) {
+        String alphabet = AlphabetUtils.getAlphabet(false, isVI);
+        Random random = new Random();
+        int length = random.nextInt(4) + 5;
+        StringBuilder key = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            key.append(alphabet.charAt(random.nextInt(alphabet.length())));
+        }
+        return key.toString();
+    }
+
     public static String encrypt(String plainText, String key, boolean isVI) throws Exception {
-        String fullKey = genKey(key, isVI);
+        String fullKey = formatKey(key, isVI);
         if (plainText == null || plainText.isEmpty()) return "";
 
         StringBuilder result = new StringBuilder();
@@ -48,7 +61,7 @@ public class SubstitutionCipher {
     }
 
     public static String decrypt(String cipherText, String key, boolean isVI) throws Exception {
-        String fullKey = genKey(key, isVI);
+        String fullKey = formatKey(key, isVI);
 
         try {
             byte[] decodedBytes = Base64.getDecoder().decode(cipherText);

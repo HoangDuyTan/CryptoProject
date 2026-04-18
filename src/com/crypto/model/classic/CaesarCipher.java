@@ -4,8 +4,16 @@ import com.crypto.utils.AlphabetUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Random;
 
 public class CaesarCipher {
+    public static String genKey(boolean isVI) {
+        int m = isVI ? 89 : 26;
+        Random random = new Random();
+        int shift = random.nextInt(m - 1) + 1;
+        return String.valueOf(shift);
+    }
+
     public static String encrypt(String plainText, int shift, boolean isVI) {
         if (plainText == null || plainText.isEmpty()) return "";
 
