@@ -86,6 +86,12 @@ public class ClassicController {
                     break;
 
                 case "Transposition":
+                    try {
+                        result = isEncrypt ? TranspositionCipher.encryptBase64(input, key, isVI) : TranspositionCipher.decrypt(input, key, isVI);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(view, e.getMessage(), "Cảnh báo nhập liệu", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     break;
 
                 default:
