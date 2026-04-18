@@ -49,13 +49,18 @@ public class SubstitutionCipher {
 
     public static String decrypt(String cipherText, String key, boolean isVI) throws Exception {
         String fullKey = genKey(key, isVI);
-        byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
-        String decodedText = new String(decodedBytes, StandardCharsets.UTF_8);
 
-        StringBuilder result = new StringBuilder();
-        for (char c : decodedText.toCharArray()) {
-            result.append(AlphabetUtils.substituteCharacter(c, fullKey, isVI, false));
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
+            String decodedText = new String(decodedBytes, StandardCharsets.UTF_8);
+
+            StringBuilder result = new StringBuilder();
+            for (char c : decodedText.toCharArray()) {
+                result.append(AlphabetUtils.substituteCharacter(c, fullKey, isVI, false));
+            }
+            return result.toString();
+        } catch (IllegalArgumentException e) {
+            throw new Exception("Đầu vào không phải là chuỗi Base64 hợp lệ!");
         }
-        return result.toString();
     }
 }

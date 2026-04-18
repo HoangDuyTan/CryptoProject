@@ -21,9 +21,13 @@ public class CaesarCipher {
         return Base64.getEncoder().encodeToString(cipherText.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static String decrypt(String cipherText, int shift, boolean isVI) {
-        byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
-        String decodedText = new String(decodedBytes, StandardCharsets.UTF_8);
-        return encrypt(decodedText, -shift, isVI);
+    public static String decrypt(String cipherText, int shift, boolean isVI) throws Exception {
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
+            String decodedText = new String(decodedBytes, StandardCharsets.UTF_8);
+            return encrypt(decodedText, -shift, isVI);
+        } catch (IllegalArgumentException e) {
+            throw new Exception("Đầu vào không phải là chuỗi Base64 hợp lệ!");
+        }
     }
 }

@@ -121,46 +121,50 @@ public class HillCipher {
         int[][] k = parseKey(key, m, isVI);
         int[][] inverseK = getInverseMatrix(k, m);
 
-        byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
-        String decodedText = new String(decodedBytes, StandardCharsets.UTF_8);
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
+            String decodedText = new String(decodedBytes, StandardCharsets.UTF_8);
 
-        StringBuilder validText = new StringBuilder();
-        for (char c : decodedText.toCharArray()) {
-            if (AlphabetUtils.getCharValue(c, isVI) != -1) {
-                validText.append(c);
+            StringBuilder validText = new StringBuilder();
+            for (char c : decodedText.toCharArray()) {
+                if (AlphabetUtils.getCharValue(c, isVI) != -1) {
+                    validText.append(c);
+                }
             }
-        }
 
-        StringBuilder decryptedAlpha = new StringBuilder();
-        for (int i = 0; i < validText.length(); i += 2) {
-            int c1 = AlphabetUtils.getCharValue(validText.charAt(i), isVI);
-            int c2 = AlphabetUtils.getCharValue(validText.charAt(i + 1), isVI);
+            StringBuilder decryptedAlpha = new StringBuilder();
+            for (int i = 0; i < validText.length(); i += 2) {
+                int c1 = AlphabetUtils.getCharValue(validText.charAt(i), isVI);
+                int c2 = AlphabetUtils.getCharValue(validText.charAt(i + 1), isVI);
 
-            // p = c * k^-1 mod m
-            int p1 = (inverseK[0][0] * c1 + inverseK[0][1] * c2) % m;
-            int p2 = (inverseK[1][0] * c1 + inverseK[1][1] * c2) % m;
+                // p = c * k^-1 mod m
+                int p1 = (inverseK[0][0] * c1 + inverseK[0][1] * c2) % m;
+                int p2 = (inverseK[1][0] * c1 + inverseK[1][1] * c2) % m;
 
-            boolean upper1 = AlphabetUtils.isUpperCase(validText.charAt(i), isVI);
-            boolean upper2 = AlphabetUtils.isUpperCase(validText.charAt(i + 1), isVI);
+                boolean upper1 = AlphabetUtils.isUpperCase(validText.charAt(i), isVI);
+                boolean upper2 = AlphabetUtils.isUpperCase(validText.charAt(i + 1), isVI);
 
-            decryptedAlpha.append(AlphabetUtils.getCharByIndex(p1, upper1, isVI));
-            decryptedAlpha.append(AlphabetUtils.getCharByIndex(p2, upper2, isVI));
-        }
-
-        StringBuilder result = new StringBuilder();
-        int alphaIndex = 0;
-        for (char c : decodedText.toCharArray()) {
-            if (AlphabetUtils.getCharValue(c, isVI) != -1) {
-                result.append(decryptedAlpha.charAt(alphaIndex++));
-            } else {
-                result.append(c);
+                decryptedAlpha.append(AlphabetUtils.getCharByIndex(p1, upper1, isVI));
+                decryptedAlpha.append(AlphabetUtils.getCharByIndex(p2, upper2, isVI));
             }
-        }
 
-        if (alphaIndex < decryptedAlpha.length()) {
-            result.append(decryptedAlpha.charAt(alphaIndex));
-        }
+            StringBuilder result = new StringBuilder();
+            int alphaIndex = 0;
+            for (char c : decodedText.toCharArray()) {
+                if (AlphabetUtils.getCharValue(c, isVI) != -1) {
+                    result.append(decryptedAlpha.charAt(alphaIndex++));
+                } else {
+                    result.append(c);
+                }
+            }
 
-        return result.toString();
+            if (alphaIndex < decryptedAlpha.length()) {
+                result.append(decryptedAlpha.charAt(alphaIndex));
+            }
+
+            return result.toString();
+        } catch (IllegalArgumentException e) {
+            throw new Exception("Đầu vào không phải là chuỗi Base64 hợp lệ!");
+        }
     }
 }

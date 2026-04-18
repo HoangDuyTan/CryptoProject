@@ -51,21 +51,25 @@ public class VigenereCipher {
         int keyIndex = 0;
         int keyLength = formattedKey.length();
 
-        byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
-        String decodedText = new String(decodedBytes, StandardCharsets.UTF_8);
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
+            String decodedText = new String(decodedBytes, StandardCharsets.UTF_8);
 
-        StringBuilder result = new StringBuilder();
-        for (char c : decodedText.toCharArray()) {
-            if (AlphabetUtils.getCharValue(c, isVI) != -1) {
-                char keyChar = formattedKey.charAt(keyIndex);
-                int shift = AlphabetUtils.getCharValue(keyChar, isVI);
-                result.append(AlphabetUtils.shiftCharacter(c, -shift, isVI));
-                keyIndex = (keyIndex + 1) % keyLength;
-            } else {
-                result.append(c);
+            StringBuilder result = new StringBuilder();
+            for (char c : decodedText.toCharArray()) {
+                if (AlphabetUtils.getCharValue(c, isVI) != -1) {
+                    char keyChar = formattedKey.charAt(keyIndex);
+                    int shift = AlphabetUtils.getCharValue(keyChar, isVI);
+                    result.append(AlphabetUtils.shiftCharacter(c, -shift, isVI));
+                    keyIndex = (keyIndex + 1) % keyLength;
+                } else {
+                    result.append(c);
+                }
             }
-        }
 
-        return result.toString();
+            return result.toString();
+        } catch (IllegalArgumentException e) {
+            throw new Exception("Đầu vào không phải là chuỗi Base64 hợp lệ!");
+        }
     }
 }

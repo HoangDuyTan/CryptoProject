@@ -80,22 +80,26 @@ public class AffineCipher {
             throw new Exception("Không thể tìm thấy nghịch đảo của a, giải mã thất bại");
         }
 
-        byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
-        String decodedText = new String(decodedBytes, StandardCharsets.UTF_8);
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
+            String decodedText = new String(decodedBytes, StandardCharsets.UTF_8);
 
-        StringBuilder result = new StringBuilder();
-        for (char c : decodedText.toCharArray()) {
-            int y = AlphabetUtils.getCharValue(c, isVI);
-            if (y != -1) {
-                int decryptedValue = (aInverse * (y - b)) % m;
-                decryptedValue = (decryptedValue + m) % m;
+            StringBuilder result = new StringBuilder();
+            for (char c : decodedText.toCharArray()) {
+                int y = AlphabetUtils.getCharValue(c, isVI);
+                if (y != -1) {
+                    int decryptedValue = (aInverse * (y - b)) % m;
+                    decryptedValue = (decryptedValue + m) % m;
 
-                boolean isUpper = AlphabetUtils.isUpperCase(c, isVI);
-                result.append(AlphabetUtils.getCharByIndex(decryptedValue, isUpper, isVI));
-            } else {
-                result.append(c);
+                    boolean isUpper = AlphabetUtils.isUpperCase(c, isVI);
+                    result.append(AlphabetUtils.getCharByIndex(decryptedValue, isUpper, isVI));
+                } else {
+                    result.append(c);
+                }
             }
+            return result.toString();
+        } catch (IllegalArgumentException e) {
+            throw new Exception("Đầu vào không phải là chuỗi Base64 hợp lệ!");
         }
-        return result.toString();
     }
 }
