@@ -8,7 +8,7 @@ public class SymmetricView extends JPanel {
     JComboBox<String> cbAlgorithm, cbMode, cbPadding, cbKeySize;
     JTextField tfKey, tfIV;
     JTextArea txtInput, txtOutput;
-    JButton encryptBtn, decryptBtn, genKeyBtn, importKeyBtn, exportKeyBtn, importFileBtn, exportFileBtn;
+    JButton encryptBtn, decryptBtn, genKeyBtn, genIVBtn, importKeyBtn, exportKeyBtn, importFileBtn, exportFileBtn;
 
     public SymmetricView() {
         setLayout(new BorderLayout(10, 10));
@@ -25,6 +25,7 @@ public class SymmetricView extends JPanel {
         tfKey = new JTextField(15);
         tfIV = new JTextField(15);
         genKeyBtn = new JButton("Tạo khóa");
+        genIVBtn = new JButton("Tạo IV");
         importKeyBtn = new JButton("Nhập khóa");
         exportKeyBtn = new JButton("Xuất khóa");
 
@@ -41,9 +42,12 @@ public class SymmetricView extends JPanel {
         JPanel row2 = new JPanel();
         row2.add(new JLabel("Khóa (Key):"));
         row2.add(tfKey);
+        row2.add(genKeyBtn);
+
         row2.add(new JLabel("IV:"));
         row2.add(tfIV);
-        row2.add(genKeyBtn);
+        row2.add(genIVBtn);
+
         row2.add(importKeyBtn);
         row2.add(exportKeyBtn);
 
@@ -108,5 +112,133 @@ public class SymmetricView extends JPanel {
         // === Thêm hết vào ===
         add(topPanel, BorderLayout.NORTH);
         add(bottomPanel, BorderLayout.CENTER);
+    }
+
+    public JComboBox<String> getCbAlgorithm() {
+        return cbAlgorithm;
+    }
+
+    public void setCbAlgorithm(JComboBox<String> cbAlgorithm) {
+        this.cbAlgorithm = cbAlgorithm;
+    }
+
+    public JComboBox<String> getCbMode() {
+        return cbMode;
+    }
+
+    public void setCbMode(JComboBox<String> cbMode) {
+        this.cbMode = cbMode;
+    }
+
+    public JComboBox<String> getCbPadding() {
+        return cbPadding;
+    }
+
+    public void setCbPadding(JComboBox<String> cbPadding) {
+        this.cbPadding = cbPadding;
+    }
+
+    public JComboBox<String> getCbKeySize() {
+        return cbKeySize;
+    }
+
+    public void setCbKeySize(JComboBox<String> cbKeySize) {
+        this.cbKeySize = cbKeySize;
+    }
+
+    public JTextField getTfKey() {
+        return tfKey;
+    }
+
+    public void setTfKey(JTextField tfKey) {
+        this.tfKey = tfKey;
+    }
+
+    public JTextField getTfIV() {
+        return tfIV;
+    }
+
+    public void setTfIV(JTextField tfIV) {
+        this.tfIV = tfIV;
+    }
+
+    public JTextArea getTxtInput() {
+        return txtInput;
+    }
+
+    public void setTxtInput(JTextArea txtInput) {
+        this.txtInput = txtInput;
+    }
+
+    public JTextArea getTxtOutput() {
+        return txtOutput;
+    }
+
+    public void setTxtOutput(JTextArea txtOutput) {
+        this.txtOutput = txtOutput;
+    }
+
+    public JButton getEncryptBtn() {
+        return encryptBtn;
+    }
+
+    public void setEncryptBtn(JButton encryptBtn) {
+        this.encryptBtn = encryptBtn;
+    }
+
+    public JButton getDecryptBtn() {
+        return decryptBtn;
+    }
+
+    public void setDecryptBtn(JButton decryptBtn) {
+        this.decryptBtn = decryptBtn;
+    }
+
+    public JButton getGenKeyBtn() {
+        return genKeyBtn;
+    }
+
+    public void setGenKeyBtn(JButton genKeyBtn) {
+        this.genKeyBtn = genKeyBtn;
+    }
+
+    public JButton getGenIVBtn() {
+        return genIVBtn;
+    }
+
+    public void setGenIVBtn(JButton genIVBtn) {
+        this.genIVBtn = genIVBtn;
+    }
+
+    public JButton getImportKeyBtn() {
+        return importKeyBtn;
+    }
+
+    public void setImportKeyBtn(JButton importKeyBtn) {
+        this.importKeyBtn = importKeyBtn;
+    }
+
+    public JButton getExportKeyBtn() {
+        return exportKeyBtn;
+    }
+
+    public void setExportKeyBtn(JButton exportKeyBtn) {
+        this.exportKeyBtn = exportKeyBtn;
+    }
+
+    public JButton getExportFileBtn() {
+        return exportFileBtn;
+    }
+
+    public void setExportFileBtn(JButton exportFileBtn) {
+        this.exportFileBtn = exportFileBtn;
+    }
+
+    public JButton getImportFileBtn() {
+        return importFileBtn;
+    }
+
+    public void setImportFileBtn(JButton importFileBtn) {
+        this.importFileBtn = importFileBtn;
     }
 }

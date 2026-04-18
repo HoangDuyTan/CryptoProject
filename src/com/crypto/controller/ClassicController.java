@@ -24,7 +24,6 @@ public class ClassicController {
         String alphabet = view.getCbAlphabet().getSelectedItem().toString();
         String key = view.getTfKey().getText();
 
-
         String input = view.getTxtInput().getText();
         if (input.isEmpty()) {
             JOptionPane.showMessageDialog(view, "Vui lòng nhập văn bản đầu vào!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);

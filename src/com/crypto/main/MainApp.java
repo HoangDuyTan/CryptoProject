@@ -1,6 +1,7 @@
 package com.crypto.main;
 
 import com.crypto.controller.ClassicController;
+import com.crypto.controller.SymmetricController;
 import com.crypto.view.*;
 
 import javax.swing.*;
@@ -23,8 +24,11 @@ public class MainApp extends JFrame {
         BasicAlgorithmView basicAlgorithmView = new BasicAlgorithmView();
         new ClassicController(basicAlgorithmView);
 
+        SymmetricView symmetricView = new SymmetricView();
+        new SymmetricController(symmetricView);
+
         tabbedPane.addTab("Giải thuật cơ bản", basicAlgorithmView);
-        tabbedPane.addTab("Mã hóa đối xứng", new SymmetricView());
+        tabbedPane.addTab("Mã hóa đối xứng", symmetricView);
         tabbedPane.addTab("Mã hoá bất đối xứng", new AsymmetricView());
         tabbedPane.addTab("Hash", new HashView());
         tabbedPane.addTab("Chữ ký điện tử", new SignatureView());
