@@ -53,8 +53,8 @@ public class BasicAlgorithmView extends JPanel {
 
         // Buttons
         JPanel btnPanel = new JPanel(new GridLayout(2, 1, 0, 20));
-        encryptBtn = new JButton("Mã hóa >>");
-        decryptBtn = new JButton("<< Giải mã");
+        encryptBtn = new JButton("Mã hóa");
+        decryptBtn = new JButton("Giải mã");
 
         encryptBtn.setBackground(new Color(66, 133, 244));
         encryptBtn.setForeground(Color.white);

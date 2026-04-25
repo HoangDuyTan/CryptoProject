@@ -8,7 +8,7 @@ public class SymmetricView extends JPanel {
     JComboBox<String> cbAlgorithm, cbMode, cbPadding, cbKeySize;
     JTextField tfKey, tfIV;
     JTextArea txtInput, txtOutput;
-    JButton encryptBtn, decryptBtn, genKeyBtn, genIVBtn, importKeyBtn, exportKeyBtn, importFileBtn, exportFileBtn;
+    JButton encryptBtn, decryptBtn, genKeyBtn, genIVBtn, importKeyBtn, exportKeyBtn, importIvBtn, exportIvBtn, importFileBtn, exportFileBtn;
 
     public SymmetricView() {
         setLayout(new BorderLayout(10, 10));
@@ -28,6 +28,8 @@ public class SymmetricView extends JPanel {
         genIVBtn = new JButton("Tạo IV");
         importKeyBtn = new JButton("Nhập khóa");
         exportKeyBtn = new JButton("Xuất khóa");
+        importIvBtn = new JButton("Nhập IV");
+        exportIvBtn = new JButton("Xuất IV");
 
         JPanel row1 = new JPanel();
         row1.add(new JLabel("Giải thuật:"));
@@ -43,13 +45,14 @@ public class SymmetricView extends JPanel {
         row2.add(new JLabel("Khóa (Key):"));
         row2.add(tfKey);
         row2.add(genKeyBtn);
+        row2.add(importKeyBtn);
+        row2.add(exportKeyBtn);
 
         row2.add(new JLabel("IV:"));
         row2.add(tfIV);
         row2.add(genIVBtn);
-
-        row2.add(importKeyBtn);
-        row2.add(exportKeyBtn);
+        row2.add(importIvBtn);
+        row2.add(exportIvBtn);
 
         topPanel.add(row1);
         topPanel.add(row2);
@@ -79,8 +82,8 @@ public class SymmetricView extends JPanel {
 
         // Buttons
         JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 0, 20));
-        encryptBtn = new JButton("Mã hóa >>");
-        decryptBtn = new JButton("<< Giải mã");
+        encryptBtn = new JButton("Mã hóa");
+        decryptBtn = new JButton("Giải mã");
 
         encryptBtn.setBackground(new Color(66, 133, 244));
         encryptBtn.setForeground(Color.white);
@@ -225,6 +228,14 @@ public class SymmetricView extends JPanel {
     public void setExportKeyBtn(JButton exportKeyBtn) {
         this.exportKeyBtn = exportKeyBtn;
     }
+
+    public JButton getImportIvBtn() { return importIvBtn; }
+
+    public void setImportIvBtn(JButton importIvBtn) { this.importIvBtn = importIvBtn; }
+
+    public JButton getExportIvBtn() { return exportIvBtn; }
+
+    public void setExportIvBtn(JButton exportIvBtn) { this.exportIvBtn = exportIvBtn; }
 
     public JButton getExportFileBtn() {
         return exportFileBtn;

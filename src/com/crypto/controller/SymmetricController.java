@@ -34,90 +34,122 @@ public class SymmetricController {
         view.getGenKeyBtn().addActionListener(e -> handleGenKey());
         view.getGenIVBtn().addActionListener(e -> handleGenIV());
 
+        view.getImportIvBtn().addActionListener(e -> importFromFile(view.getTfIV()));
+        view.getExportIvBtn().addActionListener(e -> exportToFile(view.getTfIV(), ".iv"));
+
         view.getImportKeyBtn().addActionListener(e -> importFromFile(view.getTfKey()));
-        view.getExportKeyBtn().addActionListener(e -> exportToFile(view.getTfKey()));
+        view.getExportKeyBtn().addActionListener(e -> exportToFile(view.getTfKey(), ".key"));
 
         view.getImportFileBtn().addActionListener(e -> importFromFile(view.getTxtInput()));
-        view.getExportFileBtn().addActionListener(e -> exportToFile(view.getTxtOutput()));
+        view.getExportFileBtn().addActionListener(e -> exportToFile(view.getTxtOutput(), ".txt"));
     }
 
     private void process(boolean isEncrypt) {
-        String algorithm = view.getCbAlgorithm().getSelectedItem().toString();
-        String mode = view.getCbMode().getSelectedItem().toString();
-        String padding = view.getCbPadding().getSelectedItem().toString();
-
-        String ivBase64 = view.getTfIV().getText();
-        String keyBase64 = view.getTfKey().getText();
         String input = view.getTxtInput().getText();
-
         if (input.isEmpty()) {
             JOptionPane.showMessageDialog(view, "Vui lòng nhập văn bản đầu vào!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
+        try {
+            setupModelFromUI();
+
+            File file = new File(input);
+            if (file.exists() && file.isFile()) {
+                processAsFile(isEncrypt, file);
+            } else {
+                processAsText(isEncrypt, input);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void setupModelFromUI() throws Exception {
+        String algorithm = view.getCbAlgorithm().getSelectedItem().toString();
+        String mode = view.getCbMode().getSelectedItem().toString();
+        String padding = view.getCbPadding().getSelectedItem().toString();
+        String keyBase64 = view.getTfKey().getText();
+        String ivBase64 = view.getTfIV().getText();
 
         if (keyBase64.isEmpty()) {
             JOptionPane.showMessageDialog(view, "Vui lòng nhập key", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        try {
-            String result = "";
-            SecretKey secretKey = parseKey(keyBase64, algorithm);
-            IvParameterSpec ivSpec = parseIv(ivBase64);
+        SecretKey secretKey = parseKey(keyBase64, algorithm);
+        IvParameterSpec ivSpec = parseIv(ivBase64);
 
-            switch (algorithm) {
-                case "AES":
-                    model = new AES(mode, padding);
-                    break;
+        switch (algorithm) {
+            case "AES":
+                model = new AES(mode, padding);
+                break;
 
-                case "DES":
-                    model = new DES(mode, padding);
-                    break;
+            case "DES":
+                model = new DES(mode, padding);
+                break;
 
-                case "DESede":
-                    model = new DESede(mode, padding);
-                    break;
+            case "DESede":
+                model = new DESede(mode, padding);
+                break;
 
-                case "Blowfish":
-                    model = new Blowfish(mode, padding);
-                    break;
+            case "Blowfish":
+                model = new Blowfish(mode, padding);
+                break;
 
-                case "RC2":
-                    model = new RC2(mode, padding);
-                    break;
+            case "RC2":
+                model = new RC2(mode, padding);
+                break;
 
-                case "ARCFOUR":
-                    model = new ARCFOUR(mode, padding);
-                    break;
+            case "ARCFOUR":
+                model = new ARCFOUR(mode, padding);
+                break;
 
-                case "ChaCha20":
-                    model = new ChaCha20(mode, padding);
-                    break;
+            case "ChaCha20":
+                model = new ChaCha20(mode, padding);
+                break;
 
-                case "Twofish":
-                    model = new Twofish(mode, padding);
-                    break;
+            case "Twofish":
+                model = new Twofish(mode, padding);
+                break;
 
-                case "Serpent":
-                    model = new Serpent(mode, padding);
-                    break;
+            case "Serpent":
+                model = new Serpent(mode, padding);
+                break;
 
-                case "Camellia":
-                    model = new Camellia(mode, padding);
-                    break;
+            case "Camellia":
+                model = new Camellia(mode, padding);
+                break;
 
-                default:
-                    JOptionPane.showMessageDialog(view, "Thuật toán không được hỗ trợ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
+            default:
+                throw new Exception("Thuật toán không hỗ trợ!");
+        }
+
+        model.loadKey(secretKey);
+        if (ivSpec != null) model.loadIV(ivSpec);
+    }
+
+    private void processAsText(boolean isEncrypt, String input) throws Exception {
+        String result = isEncrypt ? model.encryptBase64(input) : model.decrypt(Base64.getDecoder().decode(input));
+        view.getTxtOutput().setText(result);
+    }
+
+    private void processAsFile(boolean isEncrypt, File srcFile) throws Exception {
+        JFileChooser saver = new JFileChooser();
+        saver.setDialogTitle(isEncrypt ? "Chọn nơi lưu File mã hóa" : "Chọn nơi lưu File giải mã");
+        saver.setSelectedFile(new File(srcFile.getAbsolutePath() + (isEncrypt ? ".enc" : ".dec")));
+
+        if (saver.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
+            File desFile = saver.getSelectedFile();
+
+            boolean success = isEncrypt
+                    ? model.encryptFile(srcFile.getAbsolutePath(), desFile.getAbsolutePath())
+                    : model.decryptFile(srcFile.getAbsolutePath(), desFile.getAbsolutePath());
+
+            if (success) {
+                view.getTxtOutput().setText("ĐÃ XỬ LÝ FILE THÀNH CÔNG!\nĐường dẫn: " + desFile.getAbsolutePath());
+                JOptionPane.showMessageDialog(view, "Xử lý file thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
-
-            model.loadKey(secretKey);
-            if (ivSpec != null) model.loadIV(ivSpec);
-
-            result = isEncrypt ? model.encryptBase64(input) : model.decrypt(Base64.getDecoder().decode(input));
-            view.getTxtOutput().setText(result);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(view, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -167,8 +199,15 @@ public class SymmetricController {
         if (chooser.showOpenDialog(view) == JFileChooser.APPROVE_OPTION) {
             try {
                 File file = chooser.getSelectedFile();
-                String content = new String(Files.readAllBytes(file.toPath()));
-                des.setText(content);
+                String fileName = file.getName();
+
+                if (fileName.endsWith(".txt") || fileName.endsWith(".key") || fileName.endsWith(".iv")) {
+                    String content = new String(Files.readAllBytes(file.toPath()));
+                    des.setText(content);
+                } else {
+                    des.setText(file.getAbsolutePath());
+                }
+
                 JOptionPane.showMessageDialog(view, "Đọc thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(view, "Lỗi đọc file: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -176,7 +215,7 @@ public class SymmetricController {
         }
     }
 
-    private void exportToFile(JTextComponent src) {
+    private void exportToFile(JTextComponent src, String ext) {
         if (src.getText().isEmpty()) {
             JOptionPane.showMessageDialog(view, "Không có dữ liệu để lưu!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
@@ -186,7 +225,14 @@ public class SymmetricController {
         if (chooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
             try {
                 File file = chooser.getSelectedFile();
-                Files.write(file.toPath(), src.getText().getBytes(), StandardOpenOption.CREATE);
+                file = new File(file.getAbsolutePath() + ext);
+
+                if (file.exists()) {
+                    JOptionPane.showMessageDialog(view, "File này đã tồn tại! Vui lòng chọn một tên khác để tạo file mới", "Từ chối ghi đè", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                Files.write(file.toPath(), src.getText().getBytes(), StandardOpenOption.CREATE_NEW);
                 JOptionPane.showMessageDialog(view, "Lưu file thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(view, "Lỗi lưu file: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
