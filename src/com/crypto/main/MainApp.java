@@ -3,12 +3,13 @@ package com.crypto.main;
 import com.crypto.controller.ClassicController;
 import com.crypto.controller.SymmetricController;
 import com.crypto.view.*;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.swing.*;
 import java.awt.*;
+import java.security.Security;
 
 public class MainApp extends JFrame {
-    public static JLabel statusBar;
 
     public MainApp() {
         setTitle("Ứng dụng Encryption");
@@ -39,6 +40,7 @@ public class MainApp extends JFrame {
     }
 
     public static void main(String[] args) {
+        Security.addProvider(new BouncyCastleProvider());
         SwingUtilities.invokeLater(MainApp::new);
     }
 }

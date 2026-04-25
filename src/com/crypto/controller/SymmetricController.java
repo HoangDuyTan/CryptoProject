@@ -1,6 +1,6 @@
 package com.crypto.controller;
 
-import com.crypto.model.symmetric.AES;
+import com.crypto.model.symmetric.*;
 import com.crypto.view.SymmetricView;
 
 import javax.crypto.SecretKey;
@@ -15,13 +15,19 @@ import java.util.Base64;
 
 public class SymmetricController {
     private SymmetricView view;
+    private AbstractSymmetric model;
 
     public SymmetricController(SymmetricView view) {
         this.view = view;
+        this.model = null;
         initController();
     }
 
     private void initController() {
+        view.getCbAlgorithm().addActionListener(e -> updateUIBasedOnAlgorithm());
+        view.getCbMode().addActionListener(e -> updatePaddingBasedOnMode());
+        updateUIBasedOnAlgorithm();
+
         view.getEncryptBtn().addActionListener(e -> process(true));
         view.getDecryptBtn().addActionListener(e -> process(false));
 
@@ -61,14 +67,54 @@ public class SymmetricController {
 
             switch (algorithm) {
                 case "AES":
-                    AES aes = new AES(mode, padding);
-                    aes.loadKey(secretKey);
-                    if (ivSpec != null) aes.loadIV(ivSpec);
-                    result = isEncrypt ? aes.encryptBase64(input) : aes.decrypt(Base64.getDecoder().decode(input));
+                    model = new AES(mode, padding);
                     break;
+
+                case "DES":
+                    model = new DES(mode, padding);
+                    break;
+
+                case "DESede":
+                    model = new DESede(mode, padding);
+                    break;
+
+                case "Blowfish":
+                    model = new Blowfish(mode, padding);
+                    break;
+
+                case "RC2":
+                    model = new RC2(mode, padding);
+                    break;
+
+                case "ARCFOUR":
+                    model = new ARCFOUR(mode, padding);
+                    break;
+
+                case "ChaCha20":
+                    model = new ChaCha20(mode, padding);
+                    break;
+
+                case "Twofish":
+                    model = new Twofish(mode, padding);
+                    break;
+
+                case "Serpent":
+                    model = new Serpent(mode, padding);
+                    break;
+
+                case "Camellia":
+                    model = new Camellia(mode, padding);
+                    break;
+
                 default:
+                    JOptionPane.showMessageDialog(view, "Thuật toán không được hỗ trợ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
             }
+
+            model.loadKey(secretKey);
+            if (ivSpec != null) model.loadIV(ivSpec);
+
+            result = isEncrypt ? model.encryptBase64(input) : model.decrypt(Base64.getDecoder().decode(input));
             view.getTxtOutput().setText(result);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -90,18 +136,10 @@ public class SymmetricController {
         String algorithm = view.getCbAlgorithm().getSelectedItem().toString();
         String keySizeStr = view.getCbKeySize().getSelectedItem().toString();
         int keySize = Integer.parseInt(keySizeStr.split(" ")[0]);
-        String genKey = "";
 
         try {
-            switch (algorithm) {
-                case "AES":
-                    SecretKey secretKey = AES.genKey(keySize);
-                    genKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
-                    break;
-
-                default:
-                    return;
-            }
+            SecretKey secretKey = AbstractSymmetric.genKey(algorithm, keySize);
+            String genKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
             view.getTfKey().setText(genKey);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view, "Lỗi khi tạo khóa: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -110,18 +148,14 @@ public class SymmetricController {
 
     private void handleGenIV() {
         String algorithm = view.getCbAlgorithm().getSelectedItem().toString();
-        String genIV = "";
+        int ivSize = 16;
+        if (algorithm.equals("DES") || algorithm.equals("DESede") || algorithm.equals("Blowfish") || algorithm.equals("RC2")) {
+            ivSize = 8;
+        }
 
         try {
-            switch (algorithm) {
-                case "AES":
-                    IvParameterSpec ivSpec = AES.genIV();
-                    genIV = Base64.getEncoder().encodeToString(ivSpec.getIV());
-                    break;
-
-                default:
-                    return;
-            }
+            IvParameterSpec ivSpec = AbstractSymmetric.genIV(ivSize);
+            String genIV = Base64.getEncoder().encodeToString(ivSpec.getIV());
             view.getTfIV().setText(genIV);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view, "Lỗi khi tạo IV: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -149,7 +183,7 @@ public class SymmetricController {
         }
 
         JFileChooser chooser = new JFileChooser();
-        if(chooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
+        if (chooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
             try {
                 File file = chooser.getSelectedFile();
                 Files.write(file.toPath(), src.getText().getBytes(), StandardOpenOption.CREATE);
@@ -157,6 +191,131 @@ public class SymmetricController {
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(view, "Lỗi lưu file: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
+        }
+    }
+
+    private void updateUIBasedOnAlgorithm() {
+        String algorithm = view.getCbAlgorithm().getSelectedItem().toString();
+        JComboBox<String> cbMode = view.getCbMode();
+        JComboBox<String> cbPadding = view.getCbPadding();
+        JComboBox<String> cbKeySize = view.getCbKeySize();
+
+        view.getTfKey().setText("");
+        view.getTfIV().setText("");
+        cbMode.removeAllItems();
+        cbPadding.removeAllItems();
+        cbKeySize.removeAllItems();
+
+        cbMode.setEnabled(true);
+        cbPadding.setEnabled(true);
+
+        switch (algorithm) {
+            case "AES":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbMode.addItem("CTR");
+                cbMode.addItem("GCM");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbPadding.addItem("ISO10126Padding");
+                cbKeySize.addItem("128 bits");
+                cbKeySize.addItem("192 bits");
+                cbKeySize.addItem("256 bits");
+                break;
+
+            case "DES":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("56 bits");
+                break;
+
+            case "DESede":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("112 bits");
+                cbKeySize.addItem("168 bits");
+                break;
+
+            case "Blowfish":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbMode.addItem("CTR");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("128 bits");
+                cbKeySize.addItem("256 bits");
+                cbKeySize.addItem("448 bits");
+                break;
+
+            case "RC2":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("40 bits");
+                cbKeySize.addItem("64 bits");
+                cbKeySize.addItem("128 bits");
+                break;
+
+            case "ARCFOUR":
+                cbMode.addItem("NONE");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("40 bits");
+                cbKeySize.addItem("128 bits");
+                cbMode.setEnabled(false);
+                cbPadding.setEnabled(false);
+                break;
+
+            case "ChaCha20":
+                cbMode.addItem("NONE");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("256 bits");
+                cbMode.setEnabled(false);
+                cbPadding.setEnabled(false);
+                break;
+
+            case "Twofish":
+            case "Serpent":
+            case "Camellia":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbMode.addItem("CTR");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("128 bits");
+                cbKeySize.addItem("192 bits");
+                cbKeySize.addItem("256 bits");
+                break;
+        }
+    }
+
+    private void updatePaddingBasedOnMode() {
+        if (view.getCbMode().getSelectedItem() == null) return;
+
+        String mode = view.getCbMode().getSelectedItem().toString();
+        JComboBox<String> cbPadding = view.getCbPadding();
+
+        if (mode.equals("CTR") || mode.equals("CFB") || mode.equals("OFB") || mode.equals("GCM") || mode.equals("NONE")) {
+            cbPadding.setSelectedItem("NoPadding");
+            cbPadding.setEnabled(false);
+        } else {
+            cbPadding.setEnabled(true);
         }
     }
 }

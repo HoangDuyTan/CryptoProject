@@ -18,10 +18,10 @@ public class SymmetricView extends JPanel {
         JPanel topPanel = new JPanel(new GridLayout(2, 1, 5, 5));
         topPanel.setBorder(new TitledBorder("Quản lý khóa"));
 
-        cbAlgorithm = new JComboBox<>(new String[]{"AES", "DES", "TripleDES"});
-        cbMode = new JComboBox<>(new String[]{"ECB", "CBC", "CFB", "OFB", "CTR"});
-        cbPadding = new JComboBox<>(new String[]{"PKCS5Padding", "NoPadding"});
-        cbKeySize = new JComboBox<>(new String[]{"128 bits", "192 bits", "256 bits"});
+        cbAlgorithm = new JComboBox<>(new String[]{"AES", "DES", "DESede", "Blowfish", "RC2", "ARCFOUR", "ChaCha20", "Twofish", "Serpent", "Camellia"});
+        cbMode = new JComboBox<>();
+        cbPadding = new JComboBox<>();
+        cbKeySize = new JComboBox<>();
         tfKey = new JTextField(15);
         tfIV = new JTextField(15);
         genKeyBtn = new JButton("Tạo khóa");
