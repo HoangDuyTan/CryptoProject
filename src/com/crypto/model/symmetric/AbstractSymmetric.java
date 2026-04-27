@@ -86,15 +86,24 @@ public abstract class AbstractSymmetric {
     public boolean encryptFile(String src, String des) throws Exception {
         Cipher cipher = getCipher(Cipher.ENCRYPT_MODE);
 
-        try (BufferedInputStream fis = new BufferedInputStream(new FileInputStream(src));
-             BufferedOutputStream fos = new BufferedOutputStream(new FileOutputStream(des));
-             CipherOutputStream cos = new CipherOutputStream(fos, cipher)) {
+        try (FileOutputStream fos = new FileOutputStream(des);
+             DataOutputStream dos = new DataOutputStream(fos)) {
+            String fileName = new File(src).getName();
+            String extension = "";
+            int i = fileName.lastIndexOf('.');
+            if (i > 0) {
+                extension = fileName.substring(i);
+            }
+            dos.writeUTF(extension);
 
-            int bytesRead;
-            byte[] buffer = new byte[1024];
+            try (FileInputStream fis = new FileInputStream(src);
+                 CipherOutputStream cos = new CipherOutputStream(fos, cipher)) {
+                int bytesRead;
+                byte[] buffer = new byte[8192];
 
-            while ((bytesRead = fis.read(buffer)) != -1) {
-                cos.write(buffer, 0, bytesRead);
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    cos.write(buffer, 0, bytesRead);
+                }
             }
             return true;
         }
@@ -103,17 +112,27 @@ public abstract class AbstractSymmetric {
     public boolean decryptFile(String src, String des) throws Exception {
         Cipher cipher = getCipher(Cipher.DECRYPT_MODE);
 
-        try (BufferedInputStream fis = new BufferedInputStream(new FileInputStream(src));
-             CipherInputStream cis = new CipherInputStream(fis, cipher);
-             BufferedOutputStream fos = new BufferedOutputStream(new FileOutputStream(des))) {
+        try (FileInputStream fis = new FileInputStream(src);
+             DataInputStream dis = new DataInputStream(fis)) {
+            String extension = dis.readUTF();
 
-            int bytesRead;
-            byte[] buffer = new byte[1024];
+            try (CipherInputStream cis = new CipherInputStream(fis, cipher);
+                 FileOutputStream fos = new FileOutputStream(des)) {
+                int bytesRead;
+                byte[] buffer = new byte[8192];
 
-            while ((bytesRead = cis.read(buffer)) != -1) {
-                fos.write(buffer, 0, bytesRead);
+                while ((bytesRead = cis.read(buffer)) != -1) {
+                    fos.write(buffer, 0, bytesRead);
+                }
             }
             return true;
+        }
+    }
+
+    public String getFileExtension(String encryptedFilePath) throws Exception {
+        try (FileInputStream fis = new FileInputStream(encryptedFilePath);
+             DataInputStream dis = new DataInputStream(fis)) {
+            return dis.readUTF();
         }
     }
 }

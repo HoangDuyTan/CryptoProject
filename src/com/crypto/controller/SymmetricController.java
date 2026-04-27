@@ -73,8 +73,13 @@ public class SymmetricController {
         String ivBase64 = view.getTfIV().getText();
 
         if (keyBase64.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Vui lòng nhập key", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-            return;
+            throw new Exception("Vui lòng khởi tạo hoặc nhập Khóa trước khi xử lý!");
+        }
+
+        if (!mode.equals("ECB") && !mode.equals("NONE")) {
+            if (ivBase64.isEmpty()) {
+                throw new Exception("Chế độ " + mode + " bắt buộc phải có IV. Vui lòng tạo IV!");
+            }
         }
 
         SecretKey secretKey = parseKey(keyBase64, algorithm);
@@ -137,10 +142,30 @@ public class SymmetricController {
     private void processAsFile(boolean isEncrypt, File srcFile) throws Exception {
         JFileChooser saver = new JFileChooser();
         saver.setDialogTitle(isEncrypt ? "Chọn nơi lưu File mã hóa" : "Chọn nơi lưu File giải mã");
-        saver.setSelectedFile(new File(srcFile.getAbsolutePath() + (isEncrypt ? ".enc" : ".dec")));
+
+        String fullName = srcFile.getName();
+        int dotIndex = fullName.lastIndexOf('.');
+        String fileName = (dotIndex == -1) ? fullName : fullName.substring(0, dotIndex);
+        if(isEncrypt) {
+            saver.setSelectedFile(new File(srcFile.getParentFile(), fileName + ".enc"));
+        } else {
+            String pathName = fileName + model.getFileExtension(srcFile.getAbsolutePath());
+            saver.setSelectedFile(new File(srcFile.getParentFile(), pathName));
+        }
 
         if (saver.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
             File desFile = saver.getSelectedFile();
+
+            if (desFile.exists()) {
+                int confirm = JOptionPane.showConfirmDialog(view,
+                        "File này đã tồn tại. Bạn có chắc chắn muốn ghi đè lên nó không?",
+                        "Xác nhận ghi đè",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE);
+                if (confirm != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
 
             boolean success = isEncrypt
                     ? model.encryptFile(srcFile.getAbsolutePath(), desFile.getAbsolutePath())
