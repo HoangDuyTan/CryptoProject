@@ -38,7 +38,7 @@ public class AsymmetricController {
     private void process(boolean isEncrypt) {
         String input = view.getTxtInput().getText();
         if (input.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Vui lòng nhập văn bản đầu vào!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, "Vui lòng nhập văn bản hoặc cho file đầu vào!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 

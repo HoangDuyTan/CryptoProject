@@ -7,7 +7,7 @@ import java.awt.*;
 public class HashView extends JPanel {
     JComboBox<String> cbAlgorithm, cbOutputFormat;
     JTextArea txtInput, txtOutput;
-    JButton hashBtn, importFileBtn;
+    JButton hashBtn, importFileBtn, exportFileBtn;
 
     public HashView() {
         setLayout(new BorderLayout(10, 10));
@@ -17,7 +17,7 @@ public class HashView extends JPanel {
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.setBorder(new TitledBorder("Cấu hình Hash"));
 
-        cbAlgorithm = new JComboBox<>(new String[]{"MD5", "SHA-1", "SHA-256", "SHA-384", "SHA-512"});
+        cbAlgorithm = new JComboBox<>(new String[]{"MD5", "SHA", "SHA-224", "SHA-256", "SHA-384", "SHA-512", "RIPEMD160", "Whirlpool"});
         cbOutputFormat = new JComboBox<>(new String[]{"Hex", "Base64"});
 
         topPanel.add(new JLabel("Giải thuật:"));
@@ -68,12 +68,71 @@ public class HashView extends JPanel {
         txtOutput.setWrapStyleWord(true);
         outputPanel.add(new JScrollPane(txtOutput), BorderLayout.CENTER);
 
+        exportFileBtn = new JButton("Xuất File");
+        outputPanel.add(exportFileBtn, BorderLayout.SOUTH);
+
         gbc.gridx = 2;
         gbc.weightx = 0.45;
-        bottomPanel.add(outputPanel, gbc);
+        bottomPanel.add(new JScrollPane(outputPanel), gbc);
 
         // === Thêm hết vào ===
         add(topPanel, BorderLayout.NORTH);
         add(bottomPanel, BorderLayout.CENTER);
+    }
+
+    public JComboBox<String> getCbAlgorithm() {
+        return cbAlgorithm;
+    }
+
+    public void setCbAlgorithm(JComboBox<String> cbAlgorithm) {
+        this.cbAlgorithm = cbAlgorithm;
+    }
+
+    public JComboBox<String> getCbOutputFormat() {
+        return cbOutputFormat;
+    }
+
+    public void setCbOutputFormat(JComboBox<String> cbOutputFormat) {
+        this.cbOutputFormat = cbOutputFormat;
+    }
+
+    public JTextArea getTxtInput() {
+        return txtInput;
+    }
+
+    public void setTxtInput(JTextArea txtInput) {
+        this.txtInput = txtInput;
+    }
+
+    public JTextArea getTxtOutput() {
+        return txtOutput;
+    }
+
+    public void setTxtOutput(JTextArea txtOutput) {
+        this.txtOutput = txtOutput;
+    }
+
+    public JButton getHashBtn() {
+        return hashBtn;
+    }
+
+    public void setHashBtn(JButton hashBtn) {
+        this.hashBtn = hashBtn;
+    }
+
+    public JButton getImportFileBtn() {
+        return importFileBtn;
+    }
+
+    public void setImportFileBtn(JButton importFileBtn) {
+        this.importFileBtn = importFileBtn;
+    }
+
+    public JButton getExportFileBtn() {
+        return exportFileBtn;
+    }
+
+    public void setExportFileBtn(JButton exportFileBtn) {
+        this.exportFileBtn = exportFileBtn;
     }
 }
