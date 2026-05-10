@@ -18,7 +18,10 @@ public class HashView extends JPanel {
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.setBorder(new TitledBorder("Cấu hình Hash"));
 
-        cbAlgorithm = new JComboBox<>(new String[]{"MD5", "SHA", "SHA-224", "SHA-256", "SHA-384", "SHA-512", "RIPEMD160", "Whirlpool"});
+        cbAlgorithm = new JComboBox<>(new String[]{"MD2", "MD5",
+                "SHA-1", "SHA-224", "SHA-256", "SHA-384", "SHA-512", "SHA-512/224", "SHA-512/256",
+                "SHA3-224", "SHA3-256", "SHA3-384", "SHA3-512",
+                "RIPEMD160", "Whirlpool"});
         cbOutputFormat = new JComboBox<>(new String[]{"Hex", "Base64"});
 
         topPanel.add(new JLabel("Giải thuật:"));
@@ -153,11 +156,19 @@ public class HashView extends JPanel {
         this.exportFileBtn = exportFileBtn;
     }
 
-    public JButton getVerifyButton() { return verifyButton; }
+    public JButton getVerifyButton() {
+        return verifyButton;
+    }
 
-    public void setVerifyButton(JButton verifyButton) { this.verifyButton = verifyButton; }
+    public void setVerifyButton(JButton verifyButton) {
+        this.verifyButton = verifyButton;
+    }
 
-    public JTextField getTxtInputHash() { return txtInputHash; }
+    public JTextField getTxtInputHash() {
+        return txtInputHash;
+    }
 
-    public void setTxtInputHash(JTextField txtInputHash) { this.txtInputHash = txtInputHash; }
+    public void setTxtInputHash(JTextField txtInputHash) {
+        this.txtInputHash = txtInputHash;
+    }
 }

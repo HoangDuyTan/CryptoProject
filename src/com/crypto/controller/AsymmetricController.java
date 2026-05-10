@@ -287,6 +287,7 @@ public class AsymmetricController {
                 break;
 
             case "ChaCha20":
+            case "ChaCha20-Poly1305":
                 cbMode.addItem("NONE");
                 cbPadding.addItem("NoPadding");
                 cbKeySize.addItem("256 bits");

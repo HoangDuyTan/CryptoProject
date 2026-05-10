@@ -22,7 +22,7 @@ public class AsymmetricView extends JPanel {
         JPanel asymmetricPanel = new JPanel(new GridLayout(3, 2, 10, 5));
         asymmetricPanel.setBorder(new TitledBorder("Thuật toán bất đối xứng"));
         cbAlgorithm = new JComboBox<>(new String[]{"RSA"});
-        cbPadding = new JComboBox<>(new String[]{"PKCS1Padding", "OAEPWithSHA-256AndMGF1Padding"});
+        cbPadding = new JComboBox<>(new String[]{"PKCS1Padding", "OAEPWithSHA-1AndMGF1Padding", "OAEPWithSHA-256AndMGF1Padding", "NoPadding"});
         cbKeySize = new JComboBox<>(new String[]{"1024 bits", "2048 bits", "4096 bits"});
         cbKeySize.setSelectedIndex(1);
 
@@ -35,7 +35,7 @@ public class AsymmetricView extends JPanel {
 
         JPanel symmetricPanel = new JPanel(new GridLayout(2, 2, 10, 0));
         symmetricPanel.setBorder(new TitledBorder("Thuật toán đối xứng"));
-        cbSymAlgorithm = new JComboBox<>(new String[]{"AES", "DES", "DESede", "Blowfish", "RC2", "ARCFOUR", "ChaCha20", "Twofish", "Serpent", "Camellia"});
+        cbSymAlgorithm = new JComboBox<>(new String[]{"AES", "DES", "DESede", "Blowfish", "RC2", "ARCFOUR", "ChaCha20", "ChaCha20-Poly1305", "Twofish", "Serpent", "Camellia"});
         cbSymPadding = new JComboBox<>(new String[]{});
         cbSymMode = new JComboBox<>(new String[]{});
         cbSymKeySize = new JComboBox<>(new String[]{});

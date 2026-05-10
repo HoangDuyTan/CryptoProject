@@ -114,6 +114,10 @@ public class SymmetricController {
                 model = new ChaCha20(mode, padding);
                 break;
 
+            case "ChaCha20-Poly1305":
+                model = new ChaCha20_Poly1305(mode, padding);
+                break;
+
             case "Twofish":
                 model = new Twofish(mode, padding);
                 break;
@@ -208,6 +212,8 @@ public class SymmetricController {
         int ivSize = 16;
         if (algorithm.equals("DES") || algorithm.equals("DESede") || algorithm.equals("Blowfish") || algorithm.equals("RC2")) {
             ivSize = 8;
+        } else if (algorithm.equals("ChaCha20") || algorithm.equals("ChaCha20-Poly1305")) {
+            ivSize = 12;
         }
 
         try {
@@ -352,6 +358,7 @@ public class SymmetricController {
                 break;
 
             case "ChaCha20":
+            case "ChaCha20-Poly1305":
                 cbMode.addItem("NONE");
                 cbPadding.addItem("NoPadding");
                 cbKeySize.addItem("256 bits");

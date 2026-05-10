@@ -18,7 +18,7 @@ public class SymmetricView extends JPanel {
         JPanel topPanel = new JPanel(new GridLayout(2, 1, 5, 5));
         topPanel.setBorder(new TitledBorder("Quản lý khóa"));
 
-        cbAlgorithm = new JComboBox<>(new String[]{"AES", "DES", "DESede", "Blowfish", "RC2", "ARCFOUR", "ChaCha20", "Twofish", "Serpent", "Camellia"});
+        cbAlgorithm = new JComboBox<>(new String[]{"AES", "DES", "DESede", "Blowfish", "RC2", "ARCFOUR", "ChaCha20", "ChaCha20-Poly1305", "Twofish", "Serpent", "Camellia"});
         cbMode = new JComboBox<>();
         cbPadding = new JComboBox<>();
         cbKeySize = new JComboBox<>();
