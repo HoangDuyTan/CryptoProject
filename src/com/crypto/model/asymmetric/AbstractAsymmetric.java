@@ -17,7 +17,11 @@ public class AbstractAsymmetric {
     protected String algorithmName;
     protected String mode;
     protected String padding;
+
     protected String symAlgorithm;
+    protected String symMode;
+    protected String symPadding;
+    protected int symKeySize;
 
     public AbstractAsymmetric(String algorithmName, String mode, String padding) {
         this.algorithmName = algorithmName;
@@ -47,30 +51,6 @@ public class AbstractAsymmetric {
         this.privateKey = keyFactory.generatePrivate(keySpec);
     }
 
-    public String getPublicKeyBase64() {
-        return Base64.getEncoder().encodeToString(publicKey.getEncoded());
-    }
-
-    public String getPrivateKeyBase64() {
-        return Base64.getEncoder().encodeToString(privateKey.getEncoded());
-    }
-
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
-
-    public void setPadding(String padding) {
-        this.padding = padding;
-    }
-
-    public void setSymAlgorithm(String symAlgorithm) {
-        this.symAlgorithm = symAlgorithm;
-    }
-
-    public void setKeySize(int keySize) {
-        this.keySize = keySize;
-    }
-
     public byte[] encrypt(String data) throws Exception {
         Cipher cipher = Cipher.getInstance(algorithmName + "/" + mode + "/" + padding);
         byte[] in = data.getBytes(StandardCharsets.UTF_8);
@@ -92,14 +72,11 @@ public class AbstractAsymmetric {
     }
 
     public boolean encryptFile(String src, String des) throws Exception {
-        String symTrans = getSymTransformation(this.symAlgorithm);
-        int symKeySize = getSymKeySize(this.symAlgorithm);
-
         KeyGenerator genKey = KeyGenerator.getInstance(this.symAlgorithm);
         genKey.init(symKeySize);
         SecretKey symKey = genKey.generateKey();
 
-        Cipher symCipher = Cipher.getInstance(symTrans);
+        Cipher symCipher = Cipher.getInstance(symAlgorithm + "/" + symMode + "/" + symPadding);
         symCipher.init(Cipher.ENCRYPT_MODE, symKey);
         byte[] iv = symCipher.getIV();
 
@@ -121,7 +98,7 @@ public class AbstractAsymmetric {
             dos.writeUTF(extension);
 
             dos.writeInt(this.keySize);
-            dos.writeUTF(symTrans);
+            dos.writeUTF(symAlgorithm + "/" + symMode + "/" + symPadding);
 
             dos.writeInt(encryptedSymKey.length);
             dos.write(encryptedSymKey);
@@ -194,33 +171,40 @@ public class AbstractAsymmetric {
         }
     }
 
-    private String getSymTransformation(String algorithm) {
-        if (algorithm.equals("ARCFOUR") || algorithm.equals("ChaCha20")) return algorithm;
-        return algorithm + "/CBC/PKCS5Padding";
-    }
-
-    private int getSymKeySize(String algorithm) {
-        switch (algorithm) {
-            case "DES":
-                return 56;
-
-            case "DESede":
-                return 168;
-
-            case "Blowfish":
-            case "RC2":
-            case "ARCFOUR":
-                return 128;
-
-            default:
-                return 256;
-        }
-    }
-
     public String getFileExtension(String encryptedFilePath) throws Exception {
         try (FileInputStream fis = new FileInputStream(encryptedFilePath);
              DataInputStream dis = new DataInputStream(fis)) {
             return dis.readUTF();
         }
     }
+
+    public String getPublicKeyBase64() {
+        return Base64.getEncoder().encodeToString(publicKey.getEncoded());
+    }
+
+    public String getPrivateKeyBase64() {
+        return Base64.getEncoder().encodeToString(privateKey.getEncoded());
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public void setPadding(String padding) {
+        this.padding = padding;
+    }
+
+    public void setKeySize(int keySize) {
+        this.keySize = keySize;
+    }
+
+    public void setSymAlgorithm(String symAlgorithm) {
+        this.symAlgorithm = symAlgorithm;
+    }
+
+    public void setSymMode(String symMode) { this.symMode = symMode; }
+
+    public void setSymPadding(String symPadding) { this.symPadding = symPadding; }
+
+    public void setSymKeySize(int symKeySize) { this.symKeySize = symKeySize; }
 }

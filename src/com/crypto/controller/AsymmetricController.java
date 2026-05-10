@@ -20,7 +20,9 @@ public class AsymmetricController {
     }
 
     private void initController() {
-        view.getCbAlgorithm().addActionListener(e -> updateUIBasedOnAlgorithm());
+        view.getCbSymAlgorithm().addActionListener(e -> updateUIBasedOnAlgorithm());
+        view.getCbSymMode().addActionListener(e -> updatePaddingBasedOnMode());
+        updateUIBasedOnAlgorithm();
 
         view.getEncryptBtn().addActionListener(e -> process(true));
         view.getDecryptBtn().addActionListener(e -> process(false));
@@ -58,16 +60,24 @@ public class AsymmetricController {
 
     private void setupModelFromUI(boolean isEncrypt) throws Exception {
         String algorithm = view.getCbAlgorithm().getSelectedItem().toString();
-        String mode = "ECB";
         String padding = view.getCbPadding().getSelectedItem().toString();
         int keySize = Integer.parseInt(view.getCbKeySize().getSelectedItem().toString().split(" ")[0]);
+
         String symAlgorithm = view.getCbSymAlgorithm().getSelectedItem().toString();
+        String symMode = view.getCbSymMode().getSelectedItem().toString();
+        String symPadding = view.getCbSymPadding().getSelectedItem().toString();
+        int symKeySize = Integer.parseInt(view.getCbSymKeySize().getSelectedItem().toString().split(" ")[0]);
+
         String publicKeyBase64 = view.getTxtPublicKey().getText();
         String privateKeyBase64 = view.getTxtPrivateKey().getText();
 
-        model = new AbstractAsymmetric(algorithm, mode, padding);
-        model.setSymAlgorithm(symAlgorithm);
+        model = new AbstractAsymmetric(algorithm, "ECB", padding);
         model.setKeySize(keySize);
+
+        model.setSymAlgorithm(symAlgorithm);
+        model.setSymMode(symMode);
+        model.setSymPadding(symPadding);
+        model.setSymKeySize(symKeySize);
 
         if (isEncrypt) {
             if (publicKeyBase64.isEmpty()) {
@@ -124,10 +134,6 @@ public class AsymmetricController {
     private void processAsText(boolean isEncrypt, String input) throws Exception {
         String result = isEncrypt ? model.encryptBase64(input) : model.decrypt(input);
         view.getTxtOutput().setText(result);
-    }
-
-    private void updateUIBasedOnAlgorithm() {
-
     }
 
     public void handleGenKey() {
@@ -192,6 +198,130 @@ public class AsymmetricController {
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(view, "Lỗi lưu file: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
+        }
+    }
+
+    // Giải thuật đối xứng
+    private void updateUIBasedOnAlgorithm() {
+        String algorithm = view.getCbSymAlgorithm().getSelectedItem().toString();
+        JComboBox<String> cbMode = view.getCbSymMode();
+        JComboBox<String> cbPadding = view.getCbSymPadding();
+        JComboBox<String> cbKeySize = view.getCbSymKeySize();
+
+        cbMode.removeAllItems();
+        cbPadding.removeAllItems();
+        cbKeySize.removeAllItems();
+
+        cbMode.setEnabled(true);
+        cbPadding.setEnabled(true);
+
+        switch (algorithm) {
+            case "AES":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbMode.addItem("CTR");
+                cbMode.addItem("GCM");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbPadding.addItem("ISO10126Padding");
+                cbKeySize.addItem("128 bits");
+                cbKeySize.addItem("192 bits");
+                cbKeySize.addItem("256 bits");
+                break;
+
+            case "DES":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("56 bits");
+                break;
+
+            case "DESede":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("112 bits");
+                cbKeySize.addItem("168 bits");
+                break;
+
+            case "Blowfish":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbMode.addItem("CTR");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("128 bits");
+                cbKeySize.addItem("256 bits");
+                cbKeySize.addItem("448 bits");
+                break;
+
+            case "RC2":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("40 bits");
+                cbKeySize.addItem("64 bits");
+                cbKeySize.addItem("128 bits");
+                break;
+
+            case "ARCFOUR":
+                cbMode.addItem("NONE");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("40 bits");
+                cbKeySize.addItem("128 bits");
+                cbMode.setEnabled(false);
+                cbPadding.setEnabled(false);
+                break;
+
+            case "ChaCha20":
+                cbMode.addItem("NONE");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("256 bits");
+                cbMode.setEnabled(false);
+                cbPadding.setEnabled(false);
+                break;
+
+            case "Twofish":
+            case "Serpent":
+            case "Camellia":
+                cbMode.addItem("ECB");
+                cbMode.addItem("CBC");
+                cbMode.addItem("CFB");
+                cbMode.addItem("OFB");
+                cbMode.addItem("CTR");
+                cbPadding.addItem("PKCS5Padding");
+                cbPadding.addItem("NoPadding");
+                cbKeySize.addItem("128 bits");
+                cbKeySize.addItem("192 bits");
+                cbKeySize.addItem("256 bits");
+                break;
+        }
+    }
+
+    private void updatePaddingBasedOnMode() {
+        if (view.getCbSymMode().getSelectedItem() == null) return;
+
+        String mode = view.getCbSymMode().getSelectedItem().toString();
+        JComboBox<String> cbPadding = view.getCbSymPadding();
+
+        if (mode.equals("CTR") || mode.equals("CFB") || mode.equals("OFB") || mode.equals("GCM") || mode.equals("NONE")) {
+            cbPadding.setSelectedItem("NoPadding");
+            cbPadding.setEnabled(false);
+        } else {
+            cbPadding.setEnabled(true);
         }
     }
 }

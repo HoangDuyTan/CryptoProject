@@ -5,7 +5,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 public class AsymmetricView extends JPanel {
-    private JComboBox<String> cbAlgorithm, cbSymAlgorithm, cbPadding, cbKeySize;
+    private JComboBox<String> cbAlgorithm, cbPadding, cbKeySize, cbSymAlgorithm, cbSymMode, cbSymPadding, cbSymKeySize;
     JTextArea txtPublicKey, txtPrivateKey;
     JButton GenKeyBtn, LoadPublicKeyBtn, SavePublicKeyBtn, LoadPrivateKeyBtn, SavePrivateKeyBtn;
 
@@ -16,25 +16,43 @@ public class AsymmetricView extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // === Xử lý khóa Panel ===
-        JPanel topPanel = new JPanel(new GridLayout(2, 2, 10, 0));
-        topPanel.setBorder(new TitledBorder("Cặp khóa"));
+        // === Thuật toán Panel ===
+        JPanel topPanel = new JPanel(new GridLayout(1, 2, 10, 0));
 
-        JPanel configPanel = new JPanel(new GridLayout(2, 2, 10, 0));
+        JPanel asymmetricPanel = new JPanel(new GridLayout(3, 2, 10, 5));
+        asymmetricPanel.setBorder(new TitledBorder("Thuật toán bất đối xứng"));
         cbAlgorithm = new JComboBox<>(new String[]{"RSA"});
         cbPadding = new JComboBox<>(new String[]{"PKCS1Padding", "OAEPWithSHA-256AndMGF1Padding"});
         cbKeySize = new JComboBox<>(new String[]{"1024 bits", "2048 bits", "4096 bits"});
         cbKeySize.setSelectedIndex(1);
-        cbSymAlgorithm = new JComboBox<>(new String[]{"AES", "DES", "DESede", "Blowfish", "RC2", "ARCFOUR", "ChaCha20", "Twofish", "Serpent", "Camellia"});
-        configPanel.add(new JLabel("Thuật toán:"));
-        configPanel.add(cbAlgorithm);
-        configPanel.add(new JLabel("Padding:"));
-        configPanel.add(cbPadding);
-        configPanel.add(new JLabel("Key Size:"));
-        configPanel.add(cbKeySize);
-        configPanel.add(new JLabel("Giải thuật đối xứng (Cho File):"));
-        configPanel.add(cbSymAlgorithm);
 
+        asymmetricPanel.add(new JLabel("Thuật toán:"));
+        asymmetricPanel.add(cbAlgorithm);
+        asymmetricPanel.add(new JLabel("Padding"));
+        asymmetricPanel.add(cbPadding);
+        asymmetricPanel.add(new JLabel("Key Size:"));
+        asymmetricPanel.add(cbKeySize);
+
+        JPanel symmetricPanel = new JPanel(new GridLayout(2, 2, 10, 0));
+        symmetricPanel.setBorder(new TitledBorder("Thuật toán đối xứng"));
+        cbSymAlgorithm = new JComboBox<>(new String[]{"AES", "DES", "DESede", "Blowfish", "RC2", "ARCFOUR", "ChaCha20", "Twofish", "Serpent", "Camellia"});
+        cbSymPadding = new JComboBox<>(new String[]{});
+        cbSymMode = new JComboBox<>(new String[]{});
+        cbSymKeySize = new JComboBox<>(new String[]{});
+
+        symmetricPanel.add(new JLabel("Thuật toán (file):"));
+        symmetricPanel.add(cbSymAlgorithm);
+        symmetricPanel.add(new JLabel("Mode:"));
+        symmetricPanel.add(cbSymMode);
+        symmetricPanel.add(new JLabel("Padding:"));
+        symmetricPanel.add(cbSymPadding);
+        symmetricPanel.add(new JLabel("Key Size:"));
+        symmetricPanel.add(cbSymKeySize);
+
+        topPanel.add(asymmetricPanel);
+        topPanel.add(symmetricPanel);
+
+        // === Xử lý khóa Panel ===
         JPanel btnPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         GenKeyBtn = new JButton("Tạo cặp khóa");
         LoadPublicKeyBtn = new JButton("Tải khóa Public");
@@ -42,10 +60,13 @@ public class AsymmetricView extends JPanel {
         LoadPrivateKeyBtn = new JButton("Tải khóa Private");
         SavePrivateKeyBtn = new JButton("Lưu khóa Private");
         btnPanel.add(LoadPublicKeyBtn);
-        btnPanel.add(SavePublicKeyBtn);
         btnPanel.add(LoadPrivateKeyBtn);
+        btnPanel.add(SavePublicKeyBtn);;
         btnPanel.add(SavePrivateKeyBtn);
         btnPanel.add(GenKeyBtn);
+
+        // public/private khóa Panel
+        JPanel keyPanel = new JPanel(new GridLayout(1, 2, 10, 10));
 
         JPanel publicKeyPanel = new JPanel(new BorderLayout());
         publicKeyPanel.add(new JLabel("Public Key"), BorderLayout.NORTH);
@@ -61,10 +82,8 @@ public class AsymmetricView extends JPanel {
         txtPrivateKey.setWrapStyleWord(true);
         privateKeyPanel.add(new JScrollPane(txtPrivateKey), BorderLayout.CENTER);
 
-        topPanel.add(configPanel);
-        topPanel.add(btnPanel);
-        topPanel.add(publicKeyPanel);
-        topPanel.add(privateKeyPanel);
+        keyPanel.add(publicKeyPanel);
+        keyPanel.add(privateKeyPanel);
 
         // === Panel Xử lý dữ liệu ===
         JPanel bottomPanel = new JPanel(new GridBagLayout());
@@ -122,8 +141,18 @@ public class AsymmetricView extends JPanel {
         bottomPanel.add(outputPanel, gbc);
 
         // === Thêm hết vào ===
-        add(topPanel, BorderLayout.NORTH);
-        add(bottomPanel, BorderLayout.CENTER);
+        JPanel container = new JPanel();
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+
+        container.add(topPanel);
+        container.add(Box.createRigidArea(new Dimension(0, 10)));
+        container.add(btnPanel);
+        container.add(Box.createRigidArea(new Dimension(0, 10)));
+        container.add(keyPanel);
+        container.add(Box.createRigidArea(new Dimension(0, 10)));
+        container.add(bottomPanel);
+
+        add(container, BorderLayout.CENTER);
     }
 
     public JComboBox<String> getCbAlgorithm() {
@@ -134,6 +163,14 @@ public class AsymmetricView extends JPanel {
         this.cbAlgorithm = cbAlgorithm;
     }
 
+    public JComboBox<String> getCbPadding() {
+        return cbPadding;
+    }
+
+    public void setCbPadding(JComboBox<String> cbPadding) {
+        this.cbPadding = cbPadding;
+    }
+
     public JComboBox<String> getCbSymAlgorithm() {
         return cbSymAlgorithm;
     }
@@ -142,12 +179,28 @@ public class AsymmetricView extends JPanel {
         this.cbSymAlgorithm = cbSymAlgorithm;
     }
 
-    public JComboBox<String> getCbPadding() {
-        return cbPadding;
+    public JComboBox<String> getCbSymMode() {
+        return cbSymMode;
     }
 
-    public void setCbPadding(JComboBox<String> cbPadding) {
-        this.cbPadding = cbPadding;
+    public void setCbSymMode(JComboBox<String> cbSymMode) {
+        this.cbSymMode = cbSymMode;
+    }
+
+    public JComboBox<String> getCbSymPadding() {
+        return cbSymPadding;
+    }
+
+    public void setCbSymPadding(JComboBox<String> cbPadding) {
+        this.cbSymPadding = cbPadding;
+    }
+
+    public JComboBox<String> getCbSymKeySize() {
+        return cbSymKeySize;
+    }
+
+    public void setCbSymKeySize(JComboBox<String> cbSymKeySize) {
+        this.cbSymKeySize = cbSymKeySize;
     }
 
     public JComboBox<String> getCbKeySize() {

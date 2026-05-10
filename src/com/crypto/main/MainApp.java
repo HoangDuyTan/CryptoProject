@@ -40,7 +40,6 @@ public class MainApp extends JFrame {
         tabbedPane.addTab("Mã hóa đối xứng", symmetricView);
         tabbedPane.addTab("Mã hoá bất đối xứng", asymmetricView);
         tabbedPane.addTab("Hash", hashView);
-        tabbedPane.addTab("Chữ ký điện tử", new SignatureView());
 
         add(tabbedPane, BorderLayout.CENTER);
 
