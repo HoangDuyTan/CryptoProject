@@ -5,6 +5,7 @@ import com.crypto.view.HashView;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
+import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -24,6 +25,8 @@ public class HashController {
 
         view.getImportFileBtn().addActionListener(e -> importFromFile(view.getTxtInput()));
         view.getExportFileBtn().addActionListener(e -> exportToFile(view.getTxtOutput(), ".txt"));
+
+        view.getVerifyButton().addActionListener(e -> verifyProcess());
     }
 
     private void process() {
@@ -45,7 +48,40 @@ public class HashController {
                 result = model.hashText(input, algorithm, format);
             }
 
+            view.getTxtOutput().setForeground(Color.BLACK);
             view.getTxtOutput().setText(result);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void verifyProcess() {
+        String input = view.getTxtInput().getText();
+        String originalHash = view.getTxtInputHash().getText();
+
+        if (input.isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Vui lòng nhập văn bản hoặc chọn file để kiểm tra!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (originalHash.isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Vui lòng dán mã băm gốc vào ô đối chiếu!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            String algorithm = view.getCbAlgorithm().getSelectedItem().toString();
+            String format = view.getCbOutputFormat().getSelectedItem().toString();
+
+            boolean isMatch = model.verify(input, algorithm, format, originalHash);
+
+            if (isMatch) {
+                view.getTxtOutput().setForeground(new Color(0, 128, 0));
+                view.getTxtOutput().setText("Tuyệt vời! Dữ liệu nguyên vẹn");
+            } else {
+                view.getTxtOutput().setForeground(Color.RED);
+                view.getTxtOutput().setText("Cảnh báo: Dữ liệu đã bị thay đổi hoặc làm giả!");
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }

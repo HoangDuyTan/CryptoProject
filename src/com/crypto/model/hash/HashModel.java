@@ -1,5 +1,6 @@
 package com.crypto.model.hash;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -42,5 +43,18 @@ public class HashModel {
             }
             return hexString.toString();
         }
+    }
+
+    public boolean verify(String input, String algorithm, String format, String originalHash) throws Exception {
+        File file = new File(input);
+
+        String newHash = "";
+        if (file.isFile()) {
+            newHash = hashFile(input, algorithm, format);
+        } else {
+            newHash = hashText(input, algorithm, format);
+        }
+
+        return newHash.equalsIgnoreCase(originalHash.trim());
     }
 }

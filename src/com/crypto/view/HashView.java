@@ -7,7 +7,8 @@ import java.awt.*;
 public class HashView extends JPanel {
     JComboBox<String> cbAlgorithm, cbOutputFormat;
     JTextArea txtInput, txtOutput;
-    JButton hashBtn, importFileBtn, exportFileBtn;
+    JButton hashBtn, importFileBtn, exportFileBtn, verifyButton;
+    JTextField txtInputHash;
 
     public HashView() {
         setLayout(new BorderLayout(10, 10));
@@ -75,9 +76,25 @@ public class HashView extends JPanel {
         gbc.weightx = 0.45;
         bottomPanel.add(new JScrollPane(outputPanel), gbc);
 
+        // === Panel xác nhận tính toàn vẹn ===
+        JPanel verifyPanel = new JPanel(new BorderLayout());
+        verifyPanel.setBorder(new TitledBorder("Kiểm tra tính toàn vẹn"));
+
+        txtInputHash = new JTextField();
+        verifyPanel.add(new JLabel("Dán mã băm gốc vào đây để đối chiếu: "), BorderLayout.WEST);
+        txtInputHash.setToolTipText("Dán mã băm gốc vào đây để đối chiếu...");
+
+        verifyButton = new JButton("Kiểm tra");
+        verifyButton.setBackground(new Color(244, 160, 0));
+        verifyButton.setForeground(Color.white);
+
+        verifyPanel.add(txtInputHash, BorderLayout.CENTER);
+        verifyPanel.add(verifyButton, BorderLayout.EAST);
+
         // === Thêm hết vào ===
         add(topPanel, BorderLayout.NORTH);
         add(bottomPanel, BorderLayout.CENTER);
+        add(verifyPanel, BorderLayout.SOUTH);
     }
 
     public JComboBox<String> getCbAlgorithm() {
@@ -135,4 +152,12 @@ public class HashView extends JPanel {
     public void setExportFileBtn(JButton exportFileBtn) {
         this.exportFileBtn = exportFileBtn;
     }
+
+    public JButton getVerifyButton() { return verifyButton; }
+
+    public void setVerifyButton(JButton verifyButton) { this.verifyButton = verifyButton; }
+
+    public JTextField getTxtInputHash() { return txtInputHash; }
+
+    public void setTxtInputHash(JTextField txtInputHash) { this.txtInputHash = txtInputHash; }
 }
