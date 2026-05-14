@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact name="ATBM:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ATBM_jar</output-path>
+    <root id="root">
+      <element id="archive" name="ATBM.jar">
+        <element id="module-output" name="ATBM" />
+      </element>
+      <element id="library" level="project" name="bcprov-jdk18on-1.77" />
+    </root>
+  </artifact>
+</component>

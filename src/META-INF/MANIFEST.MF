@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: com.crypto.main.MainApp
+Class-Path: bcprov-jdk18on-1.77.jar
+
