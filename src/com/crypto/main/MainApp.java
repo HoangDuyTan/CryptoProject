@@ -36,10 +36,14 @@ public class MainApp extends JFrame {
         HashView hashView = new HashView();
         new HashController(hashView);
 
+        SignatureView signatureView = new SignatureView();
+
+
         tabbedPane.addTab("Giải thuật cơ bản", basicAlgorithmView);
         tabbedPane.addTab("Mã hóa đối xứng", symmetricView);
         tabbedPane.addTab("Mã hoá bất đối xứng", asymmetricView);
         tabbedPane.addTab("Hash", hashView);
+        tabbedPane.addTab("Chữ ký điện tử", signatureView);
 
         add(tabbedPane, BorderLayout.CENTER);
 
