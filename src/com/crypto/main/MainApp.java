@@ -1,9 +1,6 @@
 package com.crypto.main;
 
-import com.crypto.controller.AsymmetricController;
-import com.crypto.controller.ClassicController;
-import com.crypto.controller.HashController;
-import com.crypto.controller.SymmetricController;
+import com.crypto.controller.*;
 import com.crypto.view.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -37,7 +34,7 @@ public class MainApp extends JFrame {
         new HashController(hashView);
 
         SignatureView signatureView = new SignatureView();
-
+        new SignatureController(signatureView);
 
         tabbedPane.addTab("Giải thuật cơ bản", basicAlgorithmView);
         tabbedPane.addTab("Mã hóa đối xứng", symmetricView);

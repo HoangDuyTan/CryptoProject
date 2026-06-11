@@ -1,10 +1,84 @@
 package com.crypto.controller;
 
+import com.crypto.model.signature.SignatureModel;
 import com.crypto.view.SignatureView;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 
 public class SignatureController {
+    private SignatureView view;
+    private SignatureModel model;
+
+    public SignatureController(SignatureView view) {
+        this.view = view;
+        this.model = new SignatureModel();
+        initController();
+    }
+
+    private void initController() {
+        view.getBtnBrowsePrivKey().addActionListener(e -> importFromFile());
+        view.getBtnSignOrder().addActionListener(e -> genDigitalSignature());
+        view.getBtnCopySignature().addActionListener(e -> executeCopyEvent());
+    }
+
+    private void importFromFile() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Chọn file Private Key");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Private Key Files (*.pem, *.txt)", "pem", "txt");
+        chooser.setFileFilter(filter);
+
+        if (chooser.showOpenDialog(view) == JFileChooser.APPROVE_OPTION) {
+            try {
+                File file = chooser.getSelectedFile();
+                view.getTxtPrivateKeyPath().setText(file.getAbsolutePath());
+
+                JOptionPane.showMessageDialog(view, "Đọc thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(view, "Lỗi đọc file: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+
+            }
+        }
+    }
+
+    private void genDigitalSignature() {
+        String privateKeyPath = view.getTxtPrivateKeyPath().getText();
+        String hashInput = view.getTxtHashInput().getText().trim();
+
+        if (privateKeyPath.isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn file Private Key!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (hashInput.isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Vui lòng dán mã băm của đơn hàng vào!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            String signatureBase64 = model.signHash(hashInput, privateKeyPath);
+
+            view.getTxtSigOutput().setText(signatureBase64);
+            view.getBtnCopySignature().setEnabled(true);
+
+            JOptionPane.showMessageDialog(view, "Ký đơn hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(view, "Lỗi khi ký đơn hàng. Vui lòng kiểm tra lại file Private Key!\nChi tiết: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            view.getTxtSigOutput().setText("");
+            view.getBtnCopySignature().setEnabled(false);
+        }
+    }
+
+    private void executeCopyEvent() {
+        String sigText = view.getTxtSigOutput().getText();
+        if (!sigText.isEmpty()) {
+            StringSelection stringSelection = new StringSelection(sigText);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+            JOptionPane.showMessageDialog(view, "Đã sao chép chữ ký! Hãy quay lại trình duyệt để dán.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
 }
