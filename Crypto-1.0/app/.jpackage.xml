@@ -1,7 +1,0 @@
-<?xml version="1.0" ?>
-<jpackage-state version="21.0.8" platform="windows">
-  <app-version>1.0</app-version>
-  <main-launcher>Crypto-1.0</main-launcher>
-  <main-class>com.crypto.main.MainApp</main-class>
-  <signed>false</signed>
-  <app-store>false</app-store></jpackage-state>
