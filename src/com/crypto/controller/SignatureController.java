@@ -8,6 +8,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.security.KeyPair;
+import java.util.Base64;
 
 public class SignatureController {
     private SignatureView view;
@@ -20,9 +23,69 @@ public class SignatureController {
     }
 
     private void initController() {
+        view.getBtnGenerateKeys().addActionListener(e -> displayGeneratedKeys());
+        view.getBtnSaveKeys().addActionListener(e -> saveKeysToFile());
         view.getBtnBrowsePrivKey().addActionListener(e -> importFromFile());
         view.getBtnSignOrder().addActionListener(e -> genDigitalSignature());
         view.getBtnCopySignature().addActionListener(e -> executeCopyEvent());
+    }
+
+    private void displayGeneratedKeys() {
+        try {
+            KeyPair keyPair = model.generateRSAKeyPair();
+
+            String privateKeyPEM = "-----BEGIN PRIVATE KEY-----\n" +
+                    Base64.getMimeEncoder(64, new byte[]{'\n'}).encodeToString(keyPair.getPrivate().getEncoded()) +
+                    "\n-----END PRIVATE KEY-----\n";
+
+            String publicKeyPEM = "-----BEGIN PUBLIC KEY-----\n" +
+                    Base64.getMimeEncoder(64, new byte[]{'\n'}).encodeToString(keyPair.getPublic().getEncoded()) +
+                    "\n-----END PUBLIC KEY-----\n";
+
+            view.getTxtPrivateKey().setText(privateKeyPEM);
+            view.getTxtPublicKey().setText(publicKeyPEM);
+
+            view.getTxtPrivateKey().setCaretPosition(0);
+            view.getTxtPublicKey().setCaretPosition(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(view, "Lỗi khi tạo bộ khóa: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void saveKeysToFile() {
+        String pubKeyContent = view.getTxtPublicKey().getText();
+        String privKeyContent = view.getTxtPrivateKey().getText();
+
+        if (pubKeyContent.isEmpty() || privKeyContent.isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Vui lòng bấm 'Tạo bộ khóa' trước khi lưu!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Chọn thư mục để lưu bộ khóa");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        if (chooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
+            File dir = chooser.getSelectedFile();
+
+            File privFile = new File(dir, "private_key.pem");
+            File pubFile = new File(dir, "public_key.pem");
+
+            try (FileOutputStream privOut = new FileOutputStream(privFile);
+                 FileOutputStream pubOut = new FileOutputStream(pubFile)) {
+
+                privOut.write(privKeyContent.getBytes());
+                pubOut.write(pubKeyContent.getBytes());
+
+                JOptionPane.showMessageDialog(view,
+                        "Đã lưu 2 file (public_key.pem và private_key.pem) thành công tại:\n" + dir.getAbsolutePath(),
+                        "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(view, "Lỗi khi lưu file: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     private void importFromFile() {

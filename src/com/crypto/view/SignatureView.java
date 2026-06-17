@@ -12,14 +12,45 @@ public class SignatureView extends JPanel {
     public JTextArea txtSigOutput;
     public JButton btnSignOrder;
     public JButton btnCopySignature;
+    public JButton btnGenerateKeys, btnSaveKeys;
+    public JTextArea txtPublicKey, txtPrivateKey;
 
     public SignatureView() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // =================================================================
-        // 1. PANEL CẤU HÌNH KHÓA BÍ MẬT (Chỉ giữ lại Private Key phục vụ ký)
-        // =================================================================
+        // PANEL TẠO BỘ KHÓA MỚI
+        JPanel keyGenPanel = new JPanel(new BorderLayout());
+        keyGenPanel.setBorder(new TitledBorder("Phát sinh bộ khóa mới (Dành cho người dùng mới)"));
+
+        btnGenerateKeys = new JButton("Tạo bộ khóa (Public / Private Key)");
+        keyGenPanel.add(btnGenerateKeys,  BorderLayout.NORTH);
+
+        btnSaveKeys = new JButton("Lưu bộ khóa (Public / Private Key)");
+        keyGenPanel.add(btnSaveKeys, BorderLayout.SOUTH);
+
+        JPanel keyPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+        JPanel publicKeyPanel = new JPanel(new BorderLayout());
+        publicKeyPanel.add(new JLabel("Public Key"), BorderLayout.NORTH);
+        txtPublicKey = new JTextArea(5, 20);
+        txtPublicKey.setLineWrap(true);
+        txtPublicKey.setWrapStyleWord(true);
+        txtPublicKey.setEditable(false);
+        publicKeyPanel.add(new JScrollPane(txtPublicKey), BorderLayout.CENTER);
+
+        JPanel privateKeyPanel = new JPanel(new BorderLayout());
+        privateKeyPanel.add(new JLabel("Private Key"), BorderLayout.NORTH);
+        txtPrivateKey = new JTextArea(5, 20);
+        txtPrivateKey.setLineWrap(true);
+        txtPrivateKey.setWrapStyleWord(true);
+        txtPrivateKey.setEditable(false);
+        privateKeyPanel.add(new JScrollPane(txtPrivateKey), BorderLayout.CENTER);
+
+        keyPanel.add(publicKeyPanel);
+        keyPanel.add(privateKeyPanel);
+        keyGenPanel.add(keyPanel,  BorderLayout.CENTER);
+
+        // PANEL CẤU HÌNH KHÓA BÍ MẬT
         JPanel topPanel = new JPanel(new GridBagLayout());
         topPanel.setBorder(new TitledBorder("1. Cấu hình Khóa cá nhân để ký"));
         GridBagConstraints gbcTop = new GridBagConstraints();
@@ -29,7 +60,7 @@ public class SignatureView extends JPanel {
         gbcTop.gridx = 0;
         gbcTop.gridy = 0;
         gbcTop.weightx = 0;
-        topPanel.add(new JLabel("Chọn Private Key (.pem/.txt): "), gbcTop);
+        topPanel.add(new JLabel("Chọn Private Key để ký (.pem/.txt): "), gbcTop);
 
         txtPrivateKeyPath = new JTextField();
         txtPrivateKeyPath.setEditable(false);
@@ -92,7 +123,11 @@ public class SignatureView extends JPanel {
         centerPanel.add(btnCopySignature, gbcC);
 
         // ======= Thêm hết vào ======
-        add(topPanel, BorderLayout.NORTH);
+        JPanel northWrapper = new JPanel(new BorderLayout());
+        northWrapper.add(keyGenPanel, BorderLayout.NORTH);
+        northWrapper.add(topPanel, BorderLayout.CENTER);
+
+        add(northWrapper, BorderLayout.NORTH);
         add(centerPanel, BorderLayout.CENTER);
     }
 
@@ -143,4 +178,20 @@ public class SignatureView extends JPanel {
     public void setBtnCopySignature(JButton btnCopySignature) {
         this.btnCopySignature = btnCopySignature;
     }
+
+    public JButton getBtnGenerateKeys() { return btnGenerateKeys; }
+
+    public void setBtnGenerateKeys(JButton btnGenerateKeys) { this.btnGenerateKeys = btnGenerateKeys; }
+
+    public JButton getBtnSaveKeys() { return btnSaveKeys; }
+
+    public void setBtnSaveKeys(JButton btnSaveKeys) { this.btnSaveKeys = btnSaveKeys; }
+
+    public JTextArea getTxtPublicKey() { return txtPublicKey; }
+
+    public void setTxtPublicKey(JTextArea txtPublicKey) { this.txtPublicKey = txtPublicKey; }
+
+    public JTextArea getTxtPrivateKey() { return txtPrivateKey; }
+
+    public void setTxtPrivateKey(JTextArea txtPrivateKey) { this.txtPrivateKey = txtPrivateKey; }
 }
